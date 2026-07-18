@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property PageStatus $status
+ */
 class City extends Model
 {
     /** @use HasFactory<CityFactory> */
@@ -30,9 +33,6 @@ class City extends Model
         'status',
     ];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [

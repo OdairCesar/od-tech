@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property array<int, string> $benefits
  * @property array<int, array{question: string, answer: string}> $faq
  * @property array<int, string> $keywords
+ * @property PageStatus $status
  */
 class Service extends Model
 {
@@ -34,9 +35,6 @@ class Service extends Model
         'status',
     ];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [

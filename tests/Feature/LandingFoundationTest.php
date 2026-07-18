@@ -23,13 +23,11 @@ test('city can be created with decimal and integer casts', function () {
 });
 
 test('landing page belongs to a service and a city and resolves route binding by slug', function () {
+    // Creating the City auto-generates the LandingPage via CityObserver (see SyncTest for that behavior).
     $service = Service::factory()->create(['slug' => 'desenvolvimento-de-sistemas-web']);
     $city = City::factory()->create(['slug' => 'bauru']);
 
-    $landingPage = LandingPage::factory()->create([
-        'service_id' => $service->id,
-        'city_id' => $city->id,
-    ]);
+    $landingPage = LandingPage::where('service_id', $service->id)->where('city_id', $city->id)->sole();
 
     expect($landingPage->slug)->toBe('desenvolvimento-de-sistemas-web-em-bauru')
         ->and($landingPage->service->is($service))->toBeTrue()

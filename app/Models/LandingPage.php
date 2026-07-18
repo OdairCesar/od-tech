@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property PageStatus $status
+ * @property-read Service $service
+ * @property-read City $city
+ */
 class LandingPage extends Model
 {
     /** @use HasFactory<LandingPageFactory> */
@@ -30,9 +35,6 @@ class LandingPage extends Model
         'status',
     ];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -62,7 +64,9 @@ class LandingPage extends Model
      */
     public function scopePublished(Builder $query): Builder
     {
-        return $query->where('status', PageStatus::Published);
+        return $query->where('status', PageStatus::Published)
+            ->whereHas('service', fn (Builder $query): Builder => $query->where('status', PageStatus::Published))
+            ->whereHas('city', fn (Builder $query): Builder => $query->where('status', PageStatus::Published));
     }
 
     public function getRouteKeyName(): string
