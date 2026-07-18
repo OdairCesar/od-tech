@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'lead_notifications' => [
+        'email' => env('LEAD_NOTIFICATION_EMAIL', 'odairferreira97@gmail.com'),
+    ],
+
 ];

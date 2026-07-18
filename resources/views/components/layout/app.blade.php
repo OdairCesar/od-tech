@@ -18,6 +18,8 @@
 
     <title>{{ $title }}</title>
 
+    <link rel="icon" type="image/png" href="{{ asset('imgs/favicon.png') }}">
+
     @if ($description)
         <meta name="description" content="{{ $description }}">
     @endif

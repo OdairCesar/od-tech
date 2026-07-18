@@ -11,7 +11,7 @@
         :secondary="['label' => 'Ver serviços', 'url' => route('services.index')]"
         dark
     >
-        <img src="{{ asset('imgs/imagem-hero.png') }}" alt="OD Tech" class="h-full w-full rounded-3xl object-cover" />
+        <img src="{{ asset('imgs/imagem-hero.webp') }}" alt="OD Tech" width="1376" height="768" fetchpriority="high" class="h-full w-full rounded-3xl object-cover" />
     </x-section.hero>
 
     <x-section.problem id="sobre" eyebrow="Sobre a OD Tech" title="Tecnologia deve resolver problemas reais — não só gerar mais sistemas para administrar">
@@ -57,9 +57,9 @@
     <x-section.manifesto />
 
     <x-section.projects id="trabalhos" eyebrow="Trabalhos" title="Tipos de projeto que já entregamos" :items="[
-        ['title' => 'Site institucional', 'desc' => 'Presença digital completa para marcas e negócios locais.', 'url' => route('services.show', 'criacao-de-sites'), 'image' => 'imgs/card-site.png'],
-        ['title' => 'Sistemas Web', 'desc' => 'Plataformas de gestão sob medida para operações internas.', 'url' => route('services.show', 'desenvolvimento-de-sistemas-web'), 'image' => 'imgs/card-web.png'],
-        ['title' => 'Aplicativo mobile', 'desc' => 'Apps nativos e híbridos, do zero até a loja de aplicativos.', 'url' => route('services.show', 'desenvolvimento-de-app'), 'image' => 'imgs/card-apps.png'],
+        ['title' => 'Site institucional', 'desc' => 'Presença digital completa para marcas e negócios locais.', 'url' => route('services.show', 'criacao-de-sites'), 'image' => 'imgs/card-site.webp'],
+        ['title' => 'Sistemas Web', 'desc' => 'Plataformas de gestão sob medida para operações internas.', 'url' => route('services.show', 'desenvolvimento-de-sistemas-web'), 'image' => 'imgs/card-web.webp'],
+        ['title' => 'Aplicativo mobile', 'desc' => 'Apps nativos e híbridos, do zero até a loja de aplicativos.', 'url' => route('services.show', 'desenvolvimento-de-app'), 'image' => 'imgs/card-apps.webp'],
     ]" />
 
     @if ($cities->isNotEmpty())

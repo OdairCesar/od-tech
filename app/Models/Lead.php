@@ -2,22 +2,25 @@
 
 namespace App\Models;
 
-use Database\Factories\ContactMessageFactory;
+use Database\Factories\LeadFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ContactMessage extends Model
+class Lead extends Model
 {
-    /** @use HasFactory<ContactMessageFactory> */
+    /** @use HasFactory<LeadFactory> */
     use HasFactory;
+
+    public const string SOURCE_CONTACT = 'contact';
 
     /** @var list<string> */
     protected $fillable = [
+        'source',
         'name',
         'email',
         'phone',
-        'company',
         'message',
+        'payload',
         'source_url',
         'read_at',
     ];
@@ -28,6 +31,7 @@ class ContactMessage extends Model
     protected function casts(): array
     {
         return [
+            'payload' => 'array',
             'read_at' => 'datetime',
         ];
     }

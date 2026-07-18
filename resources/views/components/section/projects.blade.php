@@ -14,7 +14,7 @@
             @foreach ($items as $index => $item)
                 <div data-reveal style="transition-delay: {{ $index * 120 }}ms">
                     @if (! empty($item['image']))
-                        <img src="{{ asset($item['image']) }}" alt="{{ $item['title'] }}" class="mb-4 h-[220px] w-full rounded-2xl object-cover" />
+                        <img src="{{ asset($item['image']) }}" alt="{{ $item['title'] }}" loading="lazy" decoding="async" class="mb-4 h-[220px] w-full rounded-2xl object-cover" />
                     @else
                         <div class="mb-4 flex h-[220px] w-full items-center justify-center rounded-2xl bg-gradient-to-br from-slate-200 to-slate-100 text-sm font-medium text-slate-400">
                             {{ $item['title'] }}

@@ -55,14 +55,14 @@ test('landing page 404s when the underlying service or city is a draft', functio
     $this->get(route('landing.show', $landingPage))->assertNotFound();
 });
 
-test('contact form stores a message and redirects back', function () {
+test('contact form stores a lead and redirects back', function () {
     $this->post(route('contact.store'), [
         'name' => 'Jane Doe',
         'email' => 'jane@example.com',
         'message' => 'Preciso de um orçamento.',
     ])->assertRedirect(route('contact.show'));
 
-    $this->assertDatabaseHas('contact_messages', [
+    $this->assertDatabaseHas('leads', [
         'name' => 'Jane Doe',
         'email' => 'jane@example.com',
     ]);

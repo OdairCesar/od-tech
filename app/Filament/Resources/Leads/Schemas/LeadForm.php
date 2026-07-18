@@ -1,19 +1,24 @@
 <?php
 
-namespace App\Filament\Resources\ContactMessages\Schemas;
+namespace App\Filament\Resources\Leads\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
-class ContactMessageForm
+class LeadForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
             ->components([
+                TextInput::make('source')
+                    ->label('Origem')
+                    ->disabled(),
                 TextInput::make('name')
+                    ->label('Nome')
                     ->disabled(),
                 TextInput::make('email')
                     ->label('E-mail')
@@ -23,11 +28,12 @@ class ContactMessageForm
                     ->label('Telefone')
                     ->tel()
                     ->disabled(),
-                TextInput::make('company')
-                    ->label('Empresa')
-                    ->disabled(),
                 Textarea::make('message')
                     ->label('Mensagem')
+                    ->disabled()
+                    ->columnSpanFull(),
+                KeyValue::make('payload')
+                    ->label('Detalhes adicionais')
                     ->disabled()
                     ->columnSpanFull(),
                 TextInput::make('source_url')

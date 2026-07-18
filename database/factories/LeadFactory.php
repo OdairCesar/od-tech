@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\ContactMessage;
+use App\Models\Lead;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<ContactMessage>
+ * @extends Factory<Lead>
  */
-class ContactMessageFactory extends Factory
+class LeadFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,11 +18,12 @@ class ContactMessageFactory extends Factory
     public function definition(): array
     {
         return [
+            'source' => Lead::SOURCE_CONTACT,
             'name' => $this->faker->name(),
             'email' => $this->faker->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
-            'company' => $this->faker->company(),
             'message' => $this->faker->paragraph(),
+            'payload' => ['company' => $this->faker->company()],
             'source_url' => $this->faker->url(),
             'read_at' => null,
         ];

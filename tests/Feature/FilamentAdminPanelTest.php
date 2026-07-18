@@ -2,8 +2,8 @@
 
 use App\Filament\Resources\Services\Pages\CreateService;
 use App\Models\City;
-use App\Models\ContactMessage;
 use App\Models\LandingPage;
+use App\Models\Lead;
 use App\Models\Service;
 use App\Models\User;
 use Livewire\Livewire;
@@ -39,19 +39,19 @@ test('the landing pages resource index page renders', function () {
     $this->get('/admin/landing-pages')->assertOk();
 });
 
-test('the contact messages resource index page renders and has no create route', function () {
-    ContactMessage::factory()->count(2)->create();
+test('the leads resource index page renders and has no create route', function () {
+    Lead::factory()->count(2)->create();
 
-    $this->get('/admin/contact-messages')->assertOk();
-    $this->get('/admin/contact-messages/create')->assertNotFound();
+    $this->get('/admin/leads')->assertOk();
+    $this->get('/admin/leads/create')->assertNotFound();
 });
 
-test('an editor cannot view contact messages', function () {
+test('an editor cannot view leads', function () {
     $this->actingAs(User::factory()->create());
 
-    ContactMessage::factory()->count(2)->create();
+    Lead::factory()->count(2)->create();
 
-    $this->get('/admin/contact-messages')->assertForbidden();
+    $this->get('/admin/leads')->assertForbidden();
 });
 
 test('creating a service through the resource form works end to end', function () {

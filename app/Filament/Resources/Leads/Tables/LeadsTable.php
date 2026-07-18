@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\ContactMessages\Tables;
+namespace App\Filament\Resources\Leads\Tables;
 
-use App\Models\ContactMessage;
+use App\Models\Lead;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -12,24 +12,24 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class ContactMessagesTable
+class LeadsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
+                TextColumn::make('source')
+                    ->label('Origem')
+                    ->badge(),
                 TextColumn::make('name')
                     ->label('Nome')
-                    ->weight(fn (ContactMessage $record): string => $record->read_at === null ? 'bold' : 'normal')
+                    ->weight(fn (Lead $record): string => $record->read_at === null ? 'bold' : 'normal')
                     ->searchable(),
                 TextColumn::make('email')
                     ->label('E-mail')
                     ->searchable(),
                 TextColumn::make('phone')
                     ->label('Telefone'),
-                TextColumn::make('company')
-                    ->label('Empresa')
-                    ->searchable(),
                 TextColumn::make('message')
                     ->label('Mensagem')
                     ->limit(60)
@@ -37,10 +37,10 @@ class ContactMessagesTable
                 TextColumn::make('read_at')
                     ->label('Lido em')
                     ->dateTime()
-                    ->placeholder('Não lida')
+                    ->placeholder('Não lido')
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('Recebida em')
+                    ->label('Recebido em')
                     ->dateTime()
                     ->sortable(),
             ])
@@ -49,8 +49,8 @@ class ContactMessagesTable
                 TernaryFilter::make('read_at')
                     ->label('Status')
                     ->nullable()
-                    ->trueLabel('Lidas')
-                    ->falseLabel('Não lidas')
+                    ->trueLabel('Lidos')
+                    ->falseLabel('Não lidos')
                     ->queries(
                         true: fn (Builder $query): Builder => $query->whereNotNull('read_at'),
                         false: fn (Builder $query): Builder => $query->whereNull('read_at'),
@@ -58,10 +58,10 @@ class ContactMessagesTable
             ])
             ->recordActions([
                 Action::make('markAsRead')
-                    ->label('Marcar como lida')
+                    ->label('Marcar como lido')
                     ->icon('heroicon-o-check')
-                    ->visible(fn (ContactMessage $record): bool => $record->read_at === null)
-                    ->action(fn (ContactMessage $record) => $record->update(['read_at' => now()])),
+                    ->visible(fn (Lead $record): bool => $record->read_at === null)
+                    ->action(fn (Lead $record) => $record->update(['read_at' => now()])),
                 EditAction::make(),
             ])
             ->toolbarActions([

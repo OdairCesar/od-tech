@@ -14,7 +14,7 @@
         <div class="animate-float-reverse pointer-events-none absolute right-[120px] -bottom-[160px] h-[360px] w-[360px] rounded-full bg-emerald-500/[0.28] blur-3xl" aria-hidden="true"></div>
     @endif
 
-    <div class="relative grid items-center gap-10 min-[960px]:grid-cols-[1.1fr_0.9fr] min-[960px]:gap-16">
+    <div class="relative mx-auto grid max-w-[1180px] items-center gap-10 min-[960px]:grid-cols-[1.1fr_0.9fr] min-[960px]:gap-16">
         <div data-reveal>
             @if ($eyebrow)
                 <div class="mb-7 inline-flex items-center gap-2 rounded-full border px-4 py-[7px] text-[13px] font-bold {{ $dark ? 'border-emerald-500/40 bg-emerald-500/[0.15] text-emerald-300' : 'border-emerald-500/35 bg-emerald-500/[0.12] text-emerald-600' }}">
@@ -46,7 +46,7 @@
         </div>
 
         @if ($slot->isNotEmpty())
-            <div data-reveal class="relative h-[200px] w-full min-[640px]:h-[320px] min-[960px]:h-[420px]">
+            <div data-reveal class="relative aspect-[4/3] w-full sm:aspect-[3/2]">
                 {{ $slot }}
             </div>
         @endif

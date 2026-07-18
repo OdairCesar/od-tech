@@ -90,7 +90,9 @@
       "Bash(cp \"/c/php/php-8.5.7/icudt77.dll\" \"/c/php/php-8.5.7/icuin77.dll\" \"/c/php/php-8.5.7/icuio77.dll\" \"/c/php/php-8.5.7/icuuc77.dll\" \"/c/Users/odair/.config/herd-lite/bin/\")",
       "Bash(php -r 'echo class_exists\\(\"NumberFormatter\"\\) ? \"OK: NumberFormatter loaded\" : \"MISSING\"; echo PHP_EOL;')",
       "Bash(php -r 'echo json_decode\\(file_get_contents\\(\"php://stdin\"\\),true\\)[\"tests\"] . \" tests, \" . json_decode\\(file_get_contents\\(\"php://stdin\"\\),true\\)[\"passed\"] ?? \"\";')",
-      "Bash(\"/c/php/php-8.5.7/php.exe\" artisan *)"
+      "Bash(\"/c/php/php-8.5.7/php.exe\" artisan *)",
+      "Bash(powershell -Command \"Get-ChildItem 'd:\\\\Biblioteca\\\\Projetos\\\\Bitbucket\\\\od-tech\\\\public\\\\imgs' | Select-Object Name,Length\")",
+      "Bash(php -r \"var_dump\\(function_exists\\('imagewebp'\\)\\); print_r\\(gd_info\\(\\)\\);\")"
     ],
     "additionalDirectories": [
       "C:\\Users\\odair\\.config\\herd-lite\\bin"
