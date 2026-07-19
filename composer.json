@@ -43,6 +43,8 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
             "@php artisan migrate --force",
+            "@php artisan db:seed --class=ServiceSeeder --force",
+            "@php artisan db:seed --class=CitySeeder --force",
             "npm install --ignore-scripts",
             "npm run build"
         ],
