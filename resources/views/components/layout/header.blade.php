@@ -10,7 +10,7 @@
 <header class="sticky top-0 z-50 border-b border-slate-800/10 bg-white/85 backdrop-blur-md">
     <nav class="flex items-center justify-between px-8 py-5 min-[960px]:px-14" aria-label="Principal">
         <a href="{{ route('home') }}" class="flex items-center">
-            <img src="{{ asset('imgs/logo.png') }}" alt="OD Tech" class="h-8 w-auto">
+            <img src="{{ asset('imgs/logo.png') }}" alt="OD Tec" class="h-8 w-auto">
         </a>
 
         <div class="hidden items-center gap-9 min-[780px]:flex">

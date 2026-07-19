@@ -30,5 +30,5 @@
     </section>
 
     <x-section.cta title="Vamos construir seu próximo produto digital?"
-        :button="['label' => 'Falar com a OD Tech', 'url' => route('contact.show')]" />
+        :button="['label' => 'Falar com a OD Tec', 'url' => route('contact.show')]" />
 </x-layout.app>

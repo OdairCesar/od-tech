@@ -16,7 +16,7 @@ final class StructuredDataService
         return [
             '@context' => 'https://schema.org',
             '@type' => 'Organization',
-            'name' => 'OD Tech',
+            'name' => 'OD Tec',
             'url' => route('home'),
         ];
     }
@@ -29,7 +29,7 @@ final class StructuredDataService
         return [
             '@context' => 'https://schema.org',
             '@type' => 'LocalBusiness',
-            'name' => "OD Tech - {$city->name}",
+            'name' => "OD Tec - {$city->name}",
             'url' => route('cities.show', $city),
             'address' => [
                 '@type' => 'PostalAddress',
@@ -59,7 +59,7 @@ final class StructuredDataService
             ],
             'provider' => [
                 '@type' => 'Organization',
-                'name' => 'OD Tech',
+                'name' => 'OD Tec',
                 'url' => route('home'),
             ],
         ];
@@ -77,7 +77,7 @@ final class StructuredDataService
             'description' => $description,
             'provider' => [
                 '@type' => 'Organization',
-                'name' => 'OD Tech',
+                'name' => 'OD Tec',
                 'url' => route('home'),
             ],
         ];

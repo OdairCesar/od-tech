@@ -1,4 +1,4 @@
-<x-layout.app title="OD Tech — Sites, sistemas e aplicativos sob medida" description="Desenvolvemos MVPs, sites, sistemas e aplicativos que ajudam sua empresa a validar ideias, automatizar processos e crescer com segurança.">
+<x-layout.app title="OD Tec — Sites, sistemas e aplicativos sob medida" description="Desenvolvemos MVPs, sites, sistemas e aplicativos que ajudam sua empresa a validar ideias, automatizar processos e crescer com segurança.">
     <x-slot:jsonLd>
         <x-seo.json-ld :data="$jsonLd" />
     </x-slot:jsonLd>
@@ -11,10 +11,10 @@
         :secondary="['label' => 'Ver serviços', 'url' => route('services.index')]"
         dark
     >
-        <img src="{{ asset('imgs/imagem-hero.webp') }}" alt="OD Tech" width="1376" height="768" fetchpriority="high" class="h-full w-full rounded-3xl object-cover" />
+        <img src="{{ asset('imgs/imagem-hero.webp') }}" alt="OD Tec" width="1376" height="768" fetchpriority="high" class="h-full w-full rounded-3xl object-cover" />
     </x-section.hero>
 
-    <x-section.problem id="sobre" eyebrow="Sobre a OD Tech" title="Tecnologia deve resolver problemas reais — não só gerar mais sistemas para administrar">
+    <x-section.problem id="sobre" eyebrow="Sobre a OD Tec" title="Tecnologia deve resolver problemas reais — não só gerar mais sistemas para administrar">
         <p>Desenvolvemos MVPs, aplicações web, aplicativos, automações e soluções sob medida que ajudam empresas a validar ideias, otimizar processos e crescer com segurança.</p>
         <p>Um bom projeto começa antes da primeira linha de código. Por isso trabalhamos lado a lado com nossos clientes, entendendo desafios e discutindo alternativas para que cada decisão seja tomada com clareza.</p>
 
@@ -80,5 +80,5 @@
 
     <x-section.cta title="Vamos construir seu próximo produto digital?"
         description="Conte um pouco sobre a sua empresa e o que você precisa — a resposta é rápida e sem compromisso."
-        :button="['label' => 'Falar com a OD Tech', 'url' => route('contact.show')]" />
+        :button="['label' => 'Falar com a OD Tec', 'url' => route('contact.show')]" />
 </x-layout.app>

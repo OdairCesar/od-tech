@@ -1,4 +1,4 @@
-<x-layout.app title="Serviços — OD Tech" description="Conheça os serviços de tecnologia da OD Tech: sites, sistemas web, aplicativos, APIs e muito mais.">
+<x-layout.app title="Serviços — OD Tec" description="Conheça os serviços de tecnologia da OD Tec: sites, sistemas web, aplicativos, APIs e muito mais.">
     <x-slot:jsonLd>
         <x-seo.json-ld :data="$jsonLd" />
     </x-slot:jsonLd>

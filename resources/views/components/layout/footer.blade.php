@@ -2,7 +2,7 @@
     <div class="grid gap-10 min-[640px]:grid-cols-[1.4fr_1fr_1fr]">
         <div>
             <div class="mb-3">
-                <img src="{{ asset('imgs/logo.png') }}" alt="OD Tech" class="h-6 w-auto">
+                <img src="{{ asset('imgs/logo.png') }}" alt="OD Tec" class="h-6 w-auto">
             </div>
             <p class="mb-3 max-w-xs text-sm leading-relaxed text-slate-500">Criação de sites, sistemas e aplicativos sob medida para empresas que querem crescer no digital.</p>
             <p class="text-[13.5px] font-bold text-blue-600">Ideias que evoluem para soluções.</p>
@@ -29,7 +29,7 @@
         </div>
 
         <div class="border-t border-slate-800/10 pt-6 text-[13px] text-slate-400 min-[640px]:col-span-3">
-            &copy; {{ now()->year }} OD Tech. Todos os direitos reservados.
+            &copy; {{ now()->year }} OD Tec. Todos os direitos reservados.
         </div>
     </div>
 </footer>

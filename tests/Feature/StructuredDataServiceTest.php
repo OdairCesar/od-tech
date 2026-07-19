@@ -13,7 +13,7 @@ test('organization returns a schema.org Organization block', function () {
     $data = $this->service->organization();
 
     expect($data['@type'])->toBe('Organization')
-        ->and($data['name'])->toBe('OD Tech')
+        ->and($data['name'])->toBe('OD Tec')
         ->and($data['url'])->toBe(route('home'));
 });
 

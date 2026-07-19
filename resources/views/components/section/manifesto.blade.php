@@ -1,7 +1,7 @@
 <section class="bg-slate-800 px-5 py-16 text-center text-white sm:px-8 sm:py-[120px] min-[960px]:px-14">
     <div data-reveal class="mx-auto max-w-[760px]">
         <p class="mb-7 text-[22px] leading-tight font-bold tracking-tight text-balance sm:text-[30px]">
-            Na OD Tech, acreditamos que tecnologia não é o produto. A solução é.
+            Na OD Tec, acreditamos que tecnologia não é o produto. A solução é.
         </p>
         <p class="mb-3 text-[17px] leading-relaxed text-white/65">
             Preferimos soluções simples que evoluem continuamente a sistemas complexos que nunca chegam ao mercado.

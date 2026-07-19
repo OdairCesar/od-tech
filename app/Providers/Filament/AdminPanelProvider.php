@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('OD Tech')
+            ->brandName('OD Tec')
             ->colors([
                 'primary' => Color::Blue,
                 'success' => Color::Emerald,

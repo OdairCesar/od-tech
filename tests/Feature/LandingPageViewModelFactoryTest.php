@@ -23,7 +23,7 @@ test('it builds a fully composed view model from a landing page', function () {
         ->and($vm->intro)->toBe('Desenvolvemos sites para empresas de Bauru.')
         ->and($vm->benefits)->toBe(['Design responsivo em Bauru'])
         ->and($vm->faq[0]['question'])->toBe('Atendem Bauru?')
-        ->and($vm->seo->title)->toBe('Criação de Sites em Bauru | OD Tech')
+        ->and($vm->seo->title)->toBe('Criação de Sites em Bauru | OD Tec')
         ->and($vm->breadcrumbs)->toHaveCount(3)
         ->and($vm->jsonLd)->not->toBeEmpty();
 });

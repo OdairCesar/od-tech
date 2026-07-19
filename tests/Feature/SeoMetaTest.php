@@ -15,7 +15,7 @@ test('it generates fallback meta when the landing page has no overrides', functi
 
     $seo = app(SeoMetaBuilder::class)->forLandingPage($landingPage);
 
-    expect($seo->title)->toBe('Criação de Sites em Bauru | OD Tech')
+    expect($seo->title)->toBe('Criação de Sites em Bauru | OD Tec')
         ->and($seo->description)->toBe('Sites rápidos e responsivos para empresas de Bauru.')
         ->and($seo->canonical)->toBe(route('landing.show', $landingPage))
         ->and($seo->robots)->toBe('index,follow');
@@ -61,7 +61,7 @@ test('forService generates title, description and canonical for the service page
 
     $seo = app(SeoMetaBuilder::class)->forService($service);
 
-    expect($seo->title)->toBe('Criação de Sites — OD Tech')
+    expect($seo->title)->toBe('Criação de Sites — OD Tec')
         ->and($seo->description)->toBe('Sites rápidos e responsivos para empresas de sua cidade.')
         ->and($seo->canonical)->toBe(route('services.show', $service))
         ->and($seo->robots)->toBe('index,follow');
@@ -72,7 +72,7 @@ test('forCity generates title, description and canonical for the city page', fun
 
     $seo = app(SeoMetaBuilder::class)->forCity($city);
 
-    expect($seo->title)->toBe('Tecnologia em Bauru/SP — OD Tech')
+    expect($seo->title)->toBe('Tecnologia em Bauru/SP — OD Tec')
         ->and($seo->description)->toBe('Bauru é um polo tecnológico da região.')
         ->and($seo->canonical)->toBe(route('cities.show', $city))
         ->and($seo->robots)->toBe('index,follow');

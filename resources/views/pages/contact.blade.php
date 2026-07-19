@@ -1,4 +1,4 @@
-<x-layout.app title="Fale com a OD Tech" description="Conte um pouco sobre a sua empresa e o que você precisa — a resposta é rápida e sem compromisso.">
+<x-layout.app title="Fale com a OD Tec" description="Conte um pouco sobre a sua empresa e o que você precisa — a resposta é rápida e sem compromisso.">
     <x-ui.breadcrumb :items="[
         ['label' => 'Início', 'url' => route('home')],
         ['label' => 'Contato'],

@@ -29,7 +29,7 @@
     <link rel="canonical" href="{{ $canonical ?? url()->current() }}">
 
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="OD Tech">
+    <meta property="og:site_name" content="OD Tec">
     <meta property="og:title" content="{{ $title }}">
     @if ($description)
         <meta property="og:description" content="{{ $description }}">

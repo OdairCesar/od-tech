@@ -1,4 +1,4 @@
-<x-layout.app title="Sobre a OD Tech" description="Tecnologia deve resolver problemas reais — não só gerar mais sistemas para administrar.">
+<x-layout.app title="Sobre a OD Tec" description="Tecnologia deve resolver problemas reais — não só gerar mais sistemas para administrar.">
     <x-ui.breadcrumb :items="[
         ['label' => 'Início', 'url' => route('home')],
         ['label' => 'Sobre'],
@@ -7,7 +7,7 @@
     <section class="px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
         <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-start">
             <div>
-                <x-ui.section-title eyebrow="Sobre a OD Tech">Tecnologia deve resolver problemas reais</x-ui.section-title>
+                <x-ui.section-title eyebrow="Sobre a OD Tec">Tecnologia deve resolver problemas reais</x-ui.section-title>
                 <p class="mt-5 text-base leading-relaxed text-slate-500">
                     Desenvolvemos MVPs, aplicações web, aplicativos, automações e soluções sob medida
                     que ajudam empresas a validar ideias, otimizar processos e crescer com segurança.

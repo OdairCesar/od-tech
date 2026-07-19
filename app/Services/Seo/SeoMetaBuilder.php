@@ -21,7 +21,7 @@ final readonly class SeoMetaBuilder
             ?? Str::limit($this->composer->compose($service->description, $city), 155);
 
         return new SeoMeta(
-            title: $landingPage->meta_title ?? "{$service->title} em {$city->name} | OD Tech",
+            title: $landingPage->meta_title ?? "{$service->title} em {$city->name} | OD Tec",
             description: $description,
             canonical: $landingPage->canonical ?? route('landing.show', $landingPage),
             robots: $landingPage->robots ?? 'index,follow',
@@ -31,7 +31,7 @@ final readonly class SeoMetaBuilder
     public function forService(Service $service): SeoMeta
     {
         return new SeoMeta(
-            title: "{$service->title} — OD Tech",
+            title: "{$service->title} — OD Tec",
             description: Str::limit($this->composer->compose($service->description), 155),
             canonical: route('services.show', $service),
             robots: 'index,follow',
@@ -41,7 +41,7 @@ final readonly class SeoMetaBuilder
     public function forCity(City $city): SeoMeta
     {
         return new SeoMeta(
-            title: "Tecnologia em {$city->name}/{$city->uf} — OD Tech",
+            title: "Tecnologia em {$city->name}/{$city->uf} — OD Tec",
             description: Str::limit($city->intro, 155),
             canonical: route('cities.show', $city),
             robots: 'index,follow',

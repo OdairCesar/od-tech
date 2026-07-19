@@ -13,7 +13,7 @@
         <p>{{ $vm->intro }}</p>
     </x-section.problem>
 
-    <x-section.benefits eyebrow="Benefícios" title="Por que escolher a OD Tech" :items="$vm->benefits" />
+    <x-section.benefits eyebrow="Benefícios" title="Por que escolher a OD Tec" :items="$vm->benefits" />
 
     @if (! empty($vm->faq))
         <x-section.faq eyebrow="Dúvidas frequentes" title="Perguntas frequentes" :items="$vm->faq" />

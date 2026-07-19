@@ -1,4 +1,4 @@
-<x-layout.app title="Cidades atendidas — OD Tech" description="Conheça as cidades onde a OD Tech já desenvolve sites, sistemas e aplicativos sob medida.">
+<x-layout.app title="Cidades atendidas — OD Tec" description="Conheça as cidades onde a OD Tec já desenvolve sites, sistemas e aplicativos sob medida.">
     <x-slot:jsonLd>
         <x-seo.json-ld :data="$jsonLd" />
     </x-slot:jsonLd>

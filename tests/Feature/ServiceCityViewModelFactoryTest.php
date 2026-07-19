@@ -21,7 +21,7 @@ test('makeForService builds a fully composed view model from a service', functio
         ->and($vm->description)->toBe('Desenvolvemos sites para empresas de sua cidade.')
         ->and($vm->benefits)->toBe(['Design responsivo em sua cidade'])
         ->and($vm->faq[0]['question'])->toBe('Atendem sua cidade?')
-        ->and($vm->seo->title)->toBe('Criação de Sites — OD Tech')
+        ->and($vm->seo->title)->toBe('Criação de Sites — OD Tec')
         ->and($vm->breadcrumbs)->toHaveCount(3)
         ->and($vm->jsonLd)->not->toBeEmpty();
 });
@@ -33,7 +33,7 @@ test('makeForCity builds a fully composed view model from a city', function () {
     $vm = app(ServiceCityViewModelFactory::class)->makeForCity($city);
 
     expect($vm->name)->toBe('Bauru')
-        ->and($vm->seo->title)->toBe('Tecnologia em Bauru/SP — OD Tech')
+        ->and($vm->seo->title)->toBe('Tecnologia em Bauru/SP — OD Tec')
         ->and($vm->breadcrumbs)->toHaveCount(3)
         ->and($vm->jsonLd)->not->toBeEmpty()
         ->and($vm->landingPages)->toHaveCount(1)
