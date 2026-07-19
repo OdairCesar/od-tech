@@ -39,4 +39,11 @@ return [
         'email' => env('LEAD_NOTIFICATION_EMAIL', 'odairferreira97@gmail.com'),
     ],
 
+    'openai' => [
+        'model' => env('OPENAI_MODEL', 'gpt-4.1'),
+        'image_model' => env('OPENAI_IMAGE_MODEL', 'gpt-image-1'),
+        'image_size' => env('OPENAI_IMAGE_SIZE', '1536x1024'),
+        'image_quality' => env('OPENAI_IMAGE_QUALITY', 'high'),
+    ],
+
 ];

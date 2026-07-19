@@ -4,6 +4,7 @@ namespace App\Services\Seo;
 
 use App\Models\City;
 use App\Models\LandingPage;
+use App\Models\Post;
 use App\Models\Service;
 use App\ViewModels\SeoMeta;
 use Illuminate\Support\Str;
@@ -45,6 +46,16 @@ final readonly class SeoMetaBuilder
             description: Str::limit($city->intro, 155),
             canonical: route('cities.show', $city),
             robots: 'index,follow',
+        );
+    }
+
+    public function forPost(Post $post): SeoMeta
+    {
+        return new SeoMeta(
+            title: $post->meta_title ?? "{$post->title} — Blog OD Tec",
+            description: $post->meta_description ?? Str::limit(strip_tags($post->excerpt ?? ''), 155),
+            canonical: $post->canonical ?? route('blog.show', $post),
+            robots: $post->robots ?? 'index,follow',
         );
     }
 }

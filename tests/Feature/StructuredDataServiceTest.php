@@ -2,6 +2,7 @@
 
 use App\Models\City;
 use App\Models\LandingPage;
+use App\Models\Post;
 use App\Models\Service;
 use App\Services\Seo\StructuredDataService;
 
@@ -63,6 +64,23 @@ test('faqPage maps question/answer pairs into schema.org Question entities', fun
         ->and($data['mainEntity'][0]['@type'])->toBe('Question')
         ->and($data['mainEntity'][0]['name'])->toBe('Vocês atendem minha cidade?')
         ->and($data['mainEntity'][0]['acceptedAnswer']['text'])->toBe('Sim, atendemos.');
+});
+
+test('blogPosting returns a schema.org BlogPosting block for the post', function () {
+    $post = Post::factory()->published()->create([
+        'title' => 'Como escolher um sistema para clínicas',
+        'excerpt' => 'Um guia completo.',
+    ]);
+
+    $data = $this->service->blogPosting($post);
+
+    expect($data['@type'])->toBe('BlogPosting')
+        ->and($data['headline'])->toBe('Como escolher um sistema para clínicas')
+        ->and($data['description'])->toBe('Um guia completo.')
+        ->and($data['datePublished'])->toBe($post->published_at->toAtomString())
+        ->and($data['author']['@type'])->toBe('Organization')
+        ->and($data['mainEntityOfPage']['@id'])->toBe(route('blog.show', $post))
+        ->and($data)->not->toHaveKey('image');
 });
 
 test('breadcrumbList numbers items by position and omits url on the last item', function () {

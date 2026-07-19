@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Blog\BlogIndexController;
+use App\Http\Controllers\Blog\BlogShowController;
 use App\Http\Controllers\Cities\CityIndexController;
 use App\Http\Controllers\Cities\CityShowController;
 use App\Http\Controllers\ContactController;
@@ -10,8 +12,10 @@ use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\Services\ServiceIndexController;
 use App\Http\Controllers\Services\ServiceShowController;
 use App\Http\Controllers\SitemapController;
+use App\Models\Category;
 use App\Models\City;
 use App\Models\LandingPage;
+use App\Models\Post;
 use App\Models\Service;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +34,8 @@ use Illuminate\Support\Facades\Route;
 Route::bind('service', fn (string $value): Service => Service::query()->active()->where('slug', $value)->firstOrFail());
 Route::bind('city', fn (string $value): City => City::query()->active()->where('slug', $value)->firstOrFail());
 Route::bind('landingPage', fn (string $value): LandingPage => LandingPage::query()->published()->where('slug', $value)->firstOrFail());
+Route::bind('post', fn (string $value): Post => Post::query()->published()->where('slug', $value)->firstOrFail());
+Route::bind('category', fn (string $value): Category => Category::query()->where('slug', $value)->firstOrFail());
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sobre', [PageController::class, 'about'])->name('about');
@@ -42,6 +48,10 @@ Route::get('/servicos/{service}', [ServiceShowController::class, 'show'])->name(
 
 Route::get('/cidades', [CityIndexController::class, 'index'])->name('cities.index');
 Route::get('/cidades/{city}', [CityShowController::class, 'show'])->name('cities.show');
+
+Route::get('/blog', [BlogIndexController::class, 'index'])->name('blog.index');
+Route::get('/blog/categoria/{category}', [BlogIndexController::class, 'index'])->name('blog.category');
+Route::get('/blog/{post}', [BlogShowController::class, 'show'])->name('blog.show');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');

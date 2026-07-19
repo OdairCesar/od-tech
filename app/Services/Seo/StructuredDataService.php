@@ -4,7 +4,9 @@ namespace App\Services\Seo;
 
 use App\Models\City;
 use App\Models\LandingPage;
+use App\Models\Post;
 use App\Models\Service;
+use Illuminate\Support\Facades\Storage;
 
 final class StructuredDataService
 {
@@ -105,6 +107,36 @@ final class StructuredDataService
                 ],
             ], $faq),
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function blogPosting(Post $post): array
+    {
+        return array_filter([
+            '@context' => 'https://schema.org',
+            '@type' => 'BlogPosting',
+            'headline' => $post->title,
+            'description' => $post->meta_description ?? strip_tags((string) $post->excerpt),
+            'image' => $post->cover_image ? Storage::disk('cloudinary')->url($post->cover_image) : null,
+            'datePublished' => $post->published_at?->toAtomString(),
+            'dateModified' => $post->updated_at?->toAtomString(),
+            'author' => [
+                '@type' => 'Organization',
+                'name' => 'OD Tec',
+                'url' => route('home'),
+            ],
+            'publisher' => [
+                '@type' => 'Organization',
+                'name' => 'OD Tec',
+                'url' => route('home'),
+            ],
+            'mainEntityOfPage' => [
+                '@type' => 'WebPage',
+                '@id' => route('blog.show', $post),
+            ],
+        ], fn (mixed $value): bool => $value !== null);
     }
 
     /**

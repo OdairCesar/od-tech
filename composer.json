@@ -9,9 +9,12 @@
         "php": "^8.4",
         "ext-intl": "*",
         "ext-zip": "*",
+        "cloudinary/cloudinary_php": "^3.1",
+        "codebar-ag/laravel-flysystem-cloudinary": "^13.0",
         "filament/filament": "^4.0",
         "laravel/framework": "^13.8",
-        "laravel/tinker": "^3.0"
+        "laravel/tinker": "^3.0",
+        "openai-php/laravel": "^0.20.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -50,7 +53,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"npm run dev\" --names='server,queue,vite'"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=180\" \"npm run dev\" --names='server,queue,vite'"
         ],
         "test": [
             "@php artisan config:clear --ansi @no_additional_args",

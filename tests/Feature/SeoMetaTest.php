@@ -2,6 +2,7 @@
 
 use App\Models\City;
 use App\Models\LandingPage;
+use App\Models\Post;
 use App\Models\Service;
 use App\Services\Seo\SeoMetaBuilder;
 
@@ -65,6 +66,39 @@ test('forService generates title, description and canonical for the service page
         ->and($seo->description)->toBe('Sites rápidos e responsivos para empresas de sua cidade.')
         ->and($seo->canonical)->toBe(route('services.show', $service))
         ->and($seo->robots)->toBe('index,follow');
+});
+
+test('forPost generates fallback meta from the post title and excerpt', function () {
+    $post = Post::factory()->published()->create([
+        'title' => 'Como escolher um sistema para clínicas',
+        'excerpt' => 'Um guia completo sobre sistemas de gestão para clínicas.',
+        'meta_title' => null,
+        'meta_description' => null,
+        'canonical' => null,
+    ]);
+
+    $seo = app(SeoMetaBuilder::class)->forPost($post);
+
+    expect($seo->title)->toBe('Como escolher um sistema para clínicas — Blog OD Tec')
+        ->and($seo->description)->toBe('Um guia completo sobre sistemas de gestão para clínicas.')
+        ->and($seo->canonical)->toBe(route('blog.show', $post))
+        ->and($seo->robots)->toBe('index,follow');
+});
+
+test('manual overrides on the post take precedence over generated meta', function () {
+    $post = Post::factory()->published()->create([
+        'meta_title' => 'Título customizado',
+        'meta_description' => 'Descrição customizada',
+        'canonical' => 'https://od.tech/customizada',
+        'robots' => 'noindex,nofollow',
+    ]);
+
+    $seo = app(SeoMetaBuilder::class)->forPost($post);
+
+    expect($seo->title)->toBe('Título customizado')
+        ->and($seo->description)->toBe('Descrição customizada')
+        ->and($seo->canonical)->toBe('https://od.tech/customizada')
+        ->and($seo->robots)->toBe('noindex,nofollow');
 });
 
 test('forCity generates title, description and canonical for the city page', function () {
