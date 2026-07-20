@@ -21,4 +21,17 @@
             </div>
         </div>
     </section>
+
+    <x-section.benefits eyebrow="Benefícios" title="Por que escolher a OD Tec" :items="[
+        'Comunicação direta com quem desenvolve, sem intermediários.',
+        'Processo transparente, com atualizações reais a cada etapa.',
+        'Soluções sob medida para o seu negócio, não pacotes genéricos.',
+        'Suporte contínuo após o lançamento.',
+    ]" />
+
+    <x-section.faq eyebrow="Dúvidas frequentes" title="Perguntas frequentes" :items="$faq" />
+
+    <x-section.cta title="Vamos construir seu próximo produto digital?"
+        description="Conte um pouco sobre a sua empresa e o que você precisa — a resposta é rápida e sem compromisso."
+        :button="['label' => 'Falar com a OD Tec', 'url' => route('contact.show')]" />
 </x-layout.app>

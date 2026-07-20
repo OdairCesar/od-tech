@@ -30,10 +30,23 @@ class ServiceIndexController extends Controller
             ['label' => 'Serviços'],
         ];
 
+        $faq = [
+            ['question' => 'Quanto tempo leva para desenvolver um projeto?', 'answer' => 'Depende do escopo, mas a maioria dos MVPs e sites institucionais fica pronta em poucas semanas. Definimos um prazo claro já no orçamento.'],
+            ['question' => 'Como funciona o orçamento?', 'answer' => 'Entendemos sua necessidade, propomos uma solução e enviamos um orçamento fechado, sem taxas escondidas.'],
+            ['question' => 'Vocês dão suporte após o lançamento?', 'answer' => 'Sim. Acompanhamos o projeto após o lançamento e oferecemos planos de manutenção e evolução contínua.'],
+            ['question' => 'Preciso ter conhecimento técnico para acompanhar o projeto?', 'answer' => 'Não. Explicamos cada etapa em linguagem simples e você acompanha o progresso sem precisar entender de código.'],
+        ];
+
+        $jsonLd = array_values(array_filter([
+            $this->structuredData->breadcrumbList($breadcrumbs),
+            $this->structuredData->faqPage($faq),
+        ]));
+
         return view('pages.services.index', [
             'services' => $services,
             'breadcrumbs' => $breadcrumbs,
-            'jsonLd' => [$this->structuredData->breadcrumbList($breadcrumbs)],
+            'faq' => $faq,
+            'jsonLd' => $jsonLd,
         ]);
     }
 }

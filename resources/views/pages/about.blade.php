@@ -36,4 +36,27 @@
             </div>
         </div>
     </section>
+
+    <x-section.values eyebrow="Nossos valores" title="Perto do seu negócio, do início ao pós-lançamento" description="Sem intermediários e sem burocracia: você conversa direto com quem escreve o código, entende o que está sendo construído e recebe atualizações reais a cada etapa." :items="[
+        ['title' => 'Transparência', 'desc' => 'O cliente acompanha cada etapa do projeto e participa das decisões importantes.'],
+        ['title' => 'Honestidade', 'desc' => 'Sempre recomendamos a solução que faz mais sentido para o negócio, mesmo que não seja a mais cara.'],
+        ['title' => 'Qualidade', 'desc' => 'Desenvolvemos soluções pensando em desempenho, manutenção e evolução.'],
+        ['title' => 'Ética', 'desc' => 'Construímos relações baseadas em respeito e confiança.'],
+        ['title' => 'Compromisso', 'desc' => 'Assumimos responsabilidade pelos resultados e cumprimos o que prometemos.'],
+        ['title' => 'Foco no cliente', 'desc' => 'Antes de escrever código, buscamos entender o problema.'],
+        ['title' => 'Colaboração', 'desc' => 'As melhores soluções surgem quando cliente e equipe trabalham juntos.'],
+    ]" />
+
+    <x-section.process eyebrow="Como trabalhamos" title="Um processo simples, do briefing ao lançamento" :steps="[
+        ['n' => '01', 'title' => 'Descoberta', 'desc' => 'Entendemos seu negócio, objetivos e o problema a resolver.'],
+        ['n' => '02', 'title' => 'Design & Arquitetura', 'desc' => 'Planejamos a solução técnica e a experiência do usuário.'],
+        ['n' => '03', 'title' => 'Desenvolvimento', 'desc' => 'Construímos com entregas incrementais e comunicação constante.'],
+        ['n' => '04', 'title' => 'Lançamento & Suporte', 'desc' => 'Colocamos no ar e seguimos por perto após o lançamento.'],
+    ]" />
+
+    <x-section.manifesto />
+
+    <x-section.cta title="Vamos construir seu próximo produto digital?"
+        description="Conte um pouco sobre a sua empresa e o que você precisa — a resposta é rápida e sem compromisso."
+        :button="['label' => 'Falar com a OD Tec', 'url' => route('contact.show')]" />
 </x-layout.app>

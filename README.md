@@ -41,6 +41,21 @@ php artisan boost:install
 
 Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
 
+## Deploy no Railway
+
+O serviço web padrão do Railway só atende HTTP — nada processa a fila `database` usada por
+`App\Jobs\GenerateAiBlogPost` (geração de post e imagem de capa via IA). É preciso um **segundo
+serviço** ("worker"), apontando para o mesmo repositório/branch:
+
+1. Crie um novo serviço no mesmo projeto Railway, mesmo repo/branch do serviço web.
+2. Em **Settings → Deploy → Custom Start Command**: `bash railway/run-worker.sh`.
+3. Em **Settings → Networking**: não exponha domínio/porta — é um worker, não recebe requisições.
+4. Em **Variables**: copie/vincule as mesmas variáveis do serviço web (`DB_*`, `OPENAI_*`,
+   `CLOUDINARY_*`, `QUEUE_CONNECTION`, `DB_QUEUE_RETRY_AFTER`).
+
+Veja [`railway/run-worker.sh`](railway/run-worker.sh) para o comando exato e por que os timeouts
+(`--timeout`, `DB_QUEUE_RETRY_AFTER`) precisam ficar alinhados entre si.
+
 ## Contributing
 
 Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
