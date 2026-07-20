@@ -1,7 +1,7 @@
 @php
     $navLinks = [
         ['label' => 'Sobre', 'url' => route('about')],
-        ['label' => 'Serviços', 'url' => route('servicos')],
+        ['label' => 'Serviços', 'url' => route('services.index')],
         ['label' => 'Processo', 'url' => route('home').'#processo'],
         ['label' => 'Trabalhos', 'url' => route('home').'#trabalhos'],
         ['label' => 'Blog', 'url' => route('blog.index')],
