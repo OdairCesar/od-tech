@@ -4,6 +4,7 @@
         ['label' => 'Serviços', 'url' => route('home').'#servicos'],
         ['label' => 'Processo', 'url' => route('home').'#processo'],
         ['label' => 'Trabalhos', 'url' => route('home').'#trabalhos'],
+        ['label' => 'Blog', 'url' => route('blog.index')],
     ];
 @endphp
 
