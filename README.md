@@ -1,45 +1,67 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# OD Tec
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Site institucional da OD Tec construído em Laravel 13 + Filament 4. Combina páginas públicas
+(home, serviços, cidades atendidas, blog, contato) com landing pages de SEO programático e um
+painel administrativo para gerenciar conteúdo e leads.
 
-## About Laravel
+## Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Backend:** PHP 8.5, Laravel 13, Livewire 3
+- **Admin:** Filament 4 (`/admin`)
+- **Frontend:** Tailwind CSS 4, Vite
+- **Testes:** Pest 4 / PHPUnit 12
+- **Qualidade:** Larastan (PHPStan), Laravel Pint
+- **IA:** `openai-php/laravel` para geração de posts de blog e imagem de capa
+- **Mídia:** Cloudinary (via `codebar-ag/laravel-flysystem-cloudinary`) como disco de arquivos
+- **Filas:** Laravel Queue (driver `database`)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Funcionalidades principais
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Páginas públicas** (`routes/web.php`): home, sobre, serviços, cidades, blog, contato,
+  `sitemap.xml` e `robots.txt`.
+- **SEO programático:** rota curinga `{service}-em-{city}` que resolve `LandingPage`s
+  sincronizadas automaticamente a partir de `Service`/`City` (`app/Actions/Landing`).
+- **Blog com geração via IA:** o job `App\Jobs\GenerateAiBlogPost` (fila `database`) gera texto e
+  imagem de capa de posts usando OpenAI/Cloudinary (`app/Services/Blog`).
+- **Captura de leads:** formulário de contato (`/contato`) com throttle, listado no painel admin.
+- **Painel admin (Filament):** CRUD de Serviços, Cidades, Landing Pages, Posts, Categorias e Leads
+  em `app/Filament/Resources`.
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Setup local
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan db:seed --class=ServiceSeeder
+php artisan db:seed --class=CitySeeder
+npm install
+npm run build
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Ou use o script agregado do Composer, que faz tudo isso de uma vez:
+
+```bash
+composer run setup
+```
+
+Configure no `.env` as credenciais de banco (`DB_*`), OpenAI (`OPENAI_*`) e Cloudinary
+(`CLOUDINARY_*`) antes de gerar posts de blog via IA.
+
+### Ambiente de desenvolvimento
+
+```bash
+composer run dev
+```
+
+Sobe em paralelo o servidor Laravel, o worker da fila (`queue:listen`) e o Vite em modo watch.
+
+## Testes
+
+```bash
+php artisan test --compact
+```
 
 ## Deploy no Railway
 
@@ -56,18 +78,8 @@ serviço** ("worker"), apontando para o mesmo repositório/branch:
 Veja [`railway/run-worker.sh`](railway/run-worker.sh) para o comando exato e por que os timeouts
 (`--timeout`, `DB_QUEUE_RETRY_AFTER`) precisam ficar alinhados entre si.
 
-## Contributing
+## Documentação e ferramentas de IA
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+O projeto usa [Laravel Boost](https://laravel.com/docs/ai) para dar contexto e ferramentas a
+agentes de IA (Claude Code, Cursor, etc). Convenções e regras específicas do projeto estão em
+[`CLAUDE.md`](CLAUDE.md).
