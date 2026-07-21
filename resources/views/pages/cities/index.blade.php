@@ -7,7 +7,7 @@
 
     <section class="px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
         <div class="mx-auto max-w-6xl">
-            <x-ui.section-title eyebrow="Cidades atendidas" class="mb-10">Onde já estamos presentes</x-ui.section-title>
+            <x-ui.section-title as="h1" eyebrow="Cidades atendidas" class="mb-10">Onde já estamos presentes</x-ui.section-title>
 
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($cities as $city)

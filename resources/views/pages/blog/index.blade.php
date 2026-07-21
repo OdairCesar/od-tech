@@ -14,7 +14,7 @@
 
     <section class="px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
         <div class="mx-auto max-w-6xl">
-            <x-ui.section-title eyebrow="Blog" class="mb-10">
+            <x-ui.section-title as="h1" eyebrow="Blog" class="mb-10">
                 {{ $category ? $category->name : 'Conteúdo para quem quer crescer com tecnologia' }}
             </x-ui.section-title>
 

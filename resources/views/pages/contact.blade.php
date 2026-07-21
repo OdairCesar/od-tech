@@ -6,7 +6,7 @@
 
     <section class="px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
         <div class="mx-auto max-w-xl">
-            <x-ui.section-title eyebrow="Contato" class="mb-10">Vamos construir seu próximo produto digital?</x-ui.section-title>
+            <x-ui.section-title as="h1" eyebrow="Contato" class="mb-10">Vamos construir seu próximo produto digital?</x-ui.section-title>
 
             @if (session('status'))
                 <div class="mb-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-5 py-4 text-sm font-semibold text-emerald-700">
