@@ -65,12 +65,19 @@
     {{ Vite::fonts() }}
 
     @if (config('services.google_analytics.id'))
-        <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.google_analytics.id') }}"></script>
         <script>
+            window.GA_MEASUREMENT_ID = '{{ config('services.google_analytics.id') }}';
             window.dataLayer = window.dataLayer || [];
             function gtag() { dataLayer.push(arguments); }
             gtag('js', new Date());
-            gtag('config', '{{ config('services.google_analytics.id') }}');
+            gtag('config', window.GA_MEASUREMENT_ID);
+
+            if (window.localStorage.getItem('cookie_consent') === 'accepted') {
+                var gaScript = document.createElement('script');
+                gaScript.async = true;
+                gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
+                document.head.appendChild(gaScript);
+            }
         </script>
     @endif
 </head>
@@ -82,5 +89,7 @@
     </main>
 
     <x-layout.footer />
+
+    <x-layout.cookie-consent />
 </body>
 </html>

@@ -1,4 +1,5 @@
 import { initAnalytics } from './analytics';
+import { initCookieConsent } from './consent';
 
 function initMobileMenu() {
     const toggle = document.querySelector('[data-menu-toggle]');
@@ -123,4 +124,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initCarousels();
     initContactForm();
     initAnalytics();
+    initCookieConsent();
 });
