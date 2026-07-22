@@ -19,7 +19,7 @@
                 <a href="{{ $link['url'] }}" class="text-[15px] font-semibold text-slate-800 transition-transform duration-200 hover:-translate-y-0.5">{{ $link['label'] }}</a>
             @endforeach
 
-            <x-ui.button :href="route('contact.show')" variant="primary" class="px-6 py-3 text-sm">Fale com a gente</x-ui.button>
+            <x-ui.button :href="route('contact.show')" variant="primary" class="px-6 py-3 text-sm" gaEvent="cta_click" :gaPayload="['location' => 'header_desktop', 'label' => 'Fale com a gente']">Fale com a gente</x-ui.button>
         </div>
 
         <button
@@ -45,6 +45,6 @@
             <a href="{{ $link['url'] }}" class="rounded-lg px-2 py-3 text-base font-semibold text-slate-800">{{ $link['label'] }}</a>
         @endforeach
 
-        <x-ui.button :href="route('contact.show')" variant="primary" class="mt-2 w-full text-[15px]">Fale com a gente</x-ui.button>
+        <x-ui.button :href="route('contact.show')" variant="primary" class="mt-2 w-full text-[15px]" gaEvent="cta_click" :gaPayload="['location' => 'header_mobile', 'label' => 'Fale com a gente']">Fale com a gente</x-ui.button>
     </div>
 </header>

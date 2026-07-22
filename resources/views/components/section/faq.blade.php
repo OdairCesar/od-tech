@@ -11,7 +11,7 @@
 
     <div class="flex flex-col gap-3">
         @foreach ($items as $item)
-            <details class="group rounded-2xl border border-slate-800/10 bg-white open:shadow-sm">
+            <details class="group rounded-2xl border border-slate-800/10 bg-white open:shadow-sm" data-ga-event="faq_open" data-ga-payload="{{ json_encode(['question' => $item['question']]) }}">
                 <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 font-semibold text-slate-800 marker:content-none">
                     {{ $item['question'] }}
                     <svg class="h-5 w-5 flex-none text-slate-400 transition-transform duration-200 group-open:rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">

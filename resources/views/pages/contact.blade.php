@@ -12,6 +12,11 @@
                 <div class="mb-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-5 py-4 text-sm font-semibold text-emerald-700">
                     {{ session('status') }}
                 </div>
+                <script>
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'generate_lead', { lead_source: 'contact' });
+                    }
+                </script>
             @endif
 
             <form method="POST" action="{{ route('contact.store') }}" class="flex flex-col gap-5" data-contact-form>

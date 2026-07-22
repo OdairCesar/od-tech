@@ -22,7 +22,7 @@
                     @endif
                     <h4 class="mb-1.5 text-[17px] font-bold">
                         @if (! empty($item['url']))
-                            <a href="{{ $item['url'] }}" class="hover:text-blue-600">{{ $item['title'] }}</a>
+                            <a href="{{ $item['url'] }}" class="hover:text-blue-600" data-ga-event="project_click" data-ga-payload="{{ json_encode(['title' => $item['title']]) }}">{{ $item['title'] }}</a>
                         @else
                             {{ $item['title'] }}
                         @endif

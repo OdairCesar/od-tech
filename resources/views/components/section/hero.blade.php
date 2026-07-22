@@ -35,11 +35,11 @@
             @if ($primary || $secondary)
                 <div class="hero-ctas flex flex-wrap gap-4 max-[480px]:flex-col">
                     @if ($primary)
-                        <x-ui.button :href="$primary['url']" variant="primary" class="max-[480px]:w-full max-[480px]:box-border max-[480px]:text-center">{{ $primary['label'] }}</x-ui.button>
+                        <x-ui.button :href="$primary['url']" variant="primary" class="max-[480px]:w-full max-[480px]:box-border max-[480px]:text-center" gaEvent="cta_click" :gaPayload="['location' => 'hero', 'label' => $primary['label']]">{{ $primary['label'] }}</x-ui.button>
                     @endif
 
                     @if ($secondary)
-                        <x-ui.button :href="$secondary['url']" :variant="$dark ? 'outline-dark' : 'outline-light'" class="max-[480px]:w-full max-[480px]:box-border max-[480px]:text-center">{{ $secondary['label'] }}</x-ui.button>
+                        <x-ui.button :href="$secondary['url']" :variant="$dark ? 'outline-dark' : 'outline-light'" class="max-[480px]:w-full max-[480px]:box-border max-[480px]:text-center" gaEvent="cta_click" :gaPayload="['location' => 'hero', 'label' => $secondary['label']]">{{ $secondary['label'] }}</x-ui.button>
                     @endif
                 </div>
             @endif

@@ -1,3 +1,5 @@
+import { initAnalytics } from './analytics';
+
 function initMobileMenu() {
     const toggle = document.querySelector('[data-menu-toggle]');
     const menu = document.querySelector('[data-mobile-menu]');
@@ -120,4 +122,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initRevealOnScroll();
     initCarousels();
     initContactForm();
+    initAnalytics();
 });

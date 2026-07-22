@@ -13,7 +13,7 @@
 
     @if ($button)
         <div data-reveal style="transition-delay: 160ms">
-            <x-ui.button :href="$button['url']" variant="primary" class="px-10 py-[18px] text-[17px]">{{ $button['label'] }}</x-ui.button>
+            <x-ui.button :href="$button['url']" variant="primary" class="px-10 py-[18px] text-[17px]" gaEvent="cta_click" :gaPayload="['location' => 'cta_section', 'label' => $button['label']]">{{ $button['label'] }}</x-ui.button>
         </div>
     @endif
 </section>

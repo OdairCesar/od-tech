@@ -21,9 +21,9 @@
         <div>
             <div class="mb-3.5 text-sm font-bold tracking-wide text-slate-500 uppercase">Contato</div>
             <div class="flex flex-col gap-2.5">
-                <a href="{{ route('contact.show') }}" class="text-[14.5px] text-slate-800 hover:text-blue-600">Fale com a gente</a>
-                <a href="mailto:contato@odairferreira.com" class="text-[14.5px] text-slate-800 hover:text-blue-600">contato@odairferreira.com</a>
-                <a href="https://wa.me/5514991434273" target="_blank" rel="noopener" class="text-[14.5px] text-slate-800 hover:text-blue-600">WhatsApp: (14) 99143-4273</a>
+                <a href="{{ route('contact.show') }}" class="text-[14.5px] text-slate-800 hover:text-blue-600" data-ga-event="cta_click" data-ga-payload="{{ json_encode(['location' => 'footer', 'label' => 'Fale com a gente']) }}">Fale com a gente</a>
+                <a href="mailto:contato@odairferreira.com" class="text-[14.5px] text-slate-800 hover:text-blue-600" data-ga-event="email_click">contato@odairferreira.com</a>
+                <a href="https://wa.me/5514991434273" target="_blank" rel="noopener" class="text-[14.5px] text-slate-800 hover:text-blue-600" data-ga-event="whatsapp_click">WhatsApp: (14) 99143-4273</a>
                 <span class="text-[14.5px] text-slate-500">CNPJ: 53.487.318/0001-05</span>
             </div>
         </div>
