@@ -14,8 +14,14 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('contact.store') }}" class="flex flex-col gap-5">
+            <form method="POST" action="{{ route('contact.store') }}" class="flex flex-col gap-5" data-contact-form>
                 @csrf
+
+                <div class="absolute left-[-9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+                    <label for="website">Deixe este campo em branco</label>
+                    <input id="website" name="website" type="text" value="{{ old('website') }}"
+                        tabindex="-1" autocomplete="off">
+                </div>
 
                 <div>
                     <label for="name" class="mb-1.5 block text-sm font-semibold text-slate-800">Nome</label>
@@ -33,7 +39,7 @@
 
                 <div>
                     <label for="phone" class="mb-1.5 block text-sm font-semibold text-slate-800">Telefone</label>
-                    <input id="phone" name="phone" type="text" value="{{ old('phone') }}"
+                    <input id="phone" name="phone" type="text" value="{{ old('phone') }}" required
                         class="w-full rounded-xl border border-slate-800/15 px-4 py-3 text-[15px]">
                     @error('phone') <p class="mt-1.5 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
@@ -47,12 +53,12 @@
 
                 <div>
                     <label for="message" class="mb-1.5 block text-sm font-semibold text-slate-800">Mensagem</label>
-                    <textarea id="message" name="message" rows="5" required
+                    <textarea id="message" name="message" rows="5"
                         class="w-full rounded-xl border border-slate-800/15 px-4 py-3 text-[15px]">{{ old('message') }}</textarea>
                     @error('message') <p class="mt-1.5 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
-                <button type="submit" class="inline-block rounded-full bg-gradient-to-br from-blue-600 via-emerald-500 to-blue-600 px-8 py-4 text-center text-base font-bold text-white">
+                <button type="submit" class="inline-block rounded-full bg-gradient-to-br from-blue-600 via-emerald-500 to-blue-600 px-8 py-4 text-center text-base font-bold text-white disabled:cursor-not-allowed disabled:opacity-60">
                     Enviar mensagem
                 </button>
             </form>

@@ -27,11 +27,23 @@ test('submitting the contact form creates a lead and sends a notification email'
     Mail::assertSent(NewLeadReceived::class, fn (NewLeadReceived $mail): bool => $mail->lead->is($lead));
 });
 
-test('the contact form requires name, email and message', function () {
+test('the contact form requires name, email and phone', function () {
     $this->post(route('contact.store'), [])
-        ->assertSessionHasErrors(['name', 'email', 'message']);
+        ->assertSessionHasErrors(['name', 'email', 'phone']);
 
     expect(Lead::count())->toBe(0);
+});
+
+test('the contact form succeeds without a message', function () {
+    $response = $this->post(route('contact.store'), [
+        'name' => 'Maria Silva',
+        'email' => 'maria@example.com',
+        'phone' => '11999999999',
+    ]);
+
+    $response->assertRedirect(route('contact.show'));
+
+    expect(Lead::count())->toBe(1);
 });
 
 test('the contact form still succeeds when the notification email fails to send', function () {
@@ -40,6 +52,7 @@ test('the contact form still succeeds when the notification email fails to send'
     $response = $this->post(route('contact.store'), [
         'name' => 'John Doe',
         'email' => 'john@example.com',
+        'phone' => '11988887777',
         'message' => 'Preciso de um orçamento.',
     ]);
 
@@ -47,4 +60,16 @@ test('the contact form still succeeds when the notification email fails to send'
     $response->assertSessionHas('status');
 
     expect(Lead::count())->toBe(1);
+});
+
+test('the contact form rejects submissions with the honeypot field filled', function () {
+    $this->post(route('contact.store'), [
+        'name' => 'Bot',
+        'email' => 'bot@example.com',
+        'phone' => '11999999999',
+        'message' => 'spam',
+        'website' => 'http://spam.example.com',
+    ])->assertSessionHasErrors('website');
+
+    expect(Lead::count())->toBe(0);
 });

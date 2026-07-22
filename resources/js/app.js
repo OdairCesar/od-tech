@@ -96,8 +96,28 @@ function initCarousels() {
     });
 }
 
+function initContactForm() {
+    const form = document.querySelector('[data-contact-form]');
+
+    if (!form) {
+        return;
+    }
+
+    form.addEventListener('submit', () => {
+        const button = form.querySelector('button[type="submit"]');
+
+        if (!button) {
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = 'Enviando...';
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initRevealOnScroll();
     initCarousels();
+    initContactForm();
 });
