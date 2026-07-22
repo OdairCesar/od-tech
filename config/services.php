@@ -46,4 +46,8 @@ return [
         'image_quality' => env('OPENAI_IMAGE_QUALITY', 'high'),
     ],
 
+    'google_analytics' => [
+        'id' => env('GOOGLE_ANALYTICS_ID'),
+    ],
+
 ];
