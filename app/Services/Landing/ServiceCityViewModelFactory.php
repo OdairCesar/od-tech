@@ -10,6 +10,7 @@ use App\Services\Seo\SeoMetaBuilder;
 use App\Services\Seo\StructuredDataService;
 use App\ViewModels\CityViewModel;
 use App\ViewModels\ServiceViewModel;
+use Illuminate\Support\Facades\Storage;
 
 final readonly class ServiceCityViewModelFactory
 {
@@ -43,6 +44,7 @@ final readonly class ServiceCityViewModelFactory
             benefits: $this->composer->composeList($service->benefits),
             faq: $faq,
             seo: $this->seoMetaBuilder->forService($service),
+            heroImageUrl: $service->hero_image ? Storage::disk('cloudinary')->url($service->hero_image) : null,
             breadcrumbs: $breadcrumbs,
             jsonLd: $jsonLd,
         );

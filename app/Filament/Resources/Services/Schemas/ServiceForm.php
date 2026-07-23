@@ -3,13 +3,20 @@
 namespace App\Filament\Resources\Services\Schemas;
 
 use App\Enums\PageStatus;
-use Filament\Forms\Components\FileUpload;
+use App\Filament\Support\Forms\CloudinaryImageUpload;
+use App\Services\Landing\ServiceHeroImageGenerator;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Throwable;
 
 class ServiceForm
 {
@@ -24,7 +31,8 @@ class ServiceForm
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('title')
-                    ->required(),
+                    ->required()
+                    ->live(onBlur: true),
                 TextInput::make('subtitle')
                     ->required(),
                 Textarea::make('description')
@@ -44,9 +52,45 @@ class ServiceForm
                 TagsInput::make('keywords')
                     ->required()
                     ->columnSpanFull(),
-                FileUpload::make('hero_image')
-                    ->image()
-                    ->maxSize(5120),
+                CloudinaryImageUpload::make('hero_image')
+                    ->label('Imagem do hero')
+                    ->belowContent(
+                        Action::make('generateHeroImage')
+                            ->label('Gerar imagem com IA')
+                            ->icon(Heroicon::OutlinedSparkles)
+                            ->disabled(fn (Get $get): bool => blank($get('title')))
+                            ->action(function (Get $get, Set $set, ServiceHeroImageGenerator $generator): void {
+                                // gpt-image-1 generations routinely take 10-30s; guard against
+                                // hitting a lower default max_execution_time mid-request.
+                                set_time_limit(120);
+
+                                try {
+                                    $path = $generator->generate(
+                                        title: (string) $get('title'),
+                                        subtitle: $get('subtitle'),
+                                        description: $get('description'),
+                                        benefits: $get('benefits') ?? [],
+                                    );
+                                } catch (Throwable $exception) {
+                                    report($exception);
+
+                                    Notification::make()
+                                        ->title('Não foi possível gerar a imagem')
+                                        ->body('Tente novamente em instantes.')
+                                        ->danger()
+                                        ->send();
+
+                                    return;
+                                }
+
+                                $set('hero_image', $path);
+
+                                Notification::make()
+                                    ->title('Imagem gerada com sucesso')
+                                    ->success()
+                                    ->send();
+                            }),
+                    ),
                 TextInput::make('icon'),
                 Select::make('status')
                     ->options(PageStatus::class)

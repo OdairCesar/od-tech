@@ -3,12 +3,11 @@
 namespace App\Filament\Resources\Posts\Tables;
 
 use App\Enums\PostStatus;
+use App\Filament\Support\Actions\ViewOnLandingAction;
 use App\Models\Post;
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -48,12 +47,11 @@ class PostsTable
                     ->relationship('category', 'name'),
             ])
             ->recordActions([
-                Action::make('view')
-                    ->label('Ver post')
-                    ->icon(Heroicon::OutlinedEye)
-                    ->url(fn (Post $record): string => route('blog.show', $record))
-                    ->openUrlInNewTab()
-                    ->visible(fn (Post $record): bool => $record->status === PostStatus::Published),
+                ViewOnLandingAction::make(
+                    url: fn (Post $record): string => route('blog.show', $record),
+                    visible: fn (Post $record): bool => $record->status === PostStatus::Published,
+                    label: 'Ver post',
+                ),
                 EditAction::make(),
             ])
             ->toolbarActions([

@@ -17,6 +17,7 @@ final readonly class ServiceViewModel
         public array $benefits,
         public array $faq,
         public SeoMeta $seo,
+        public ?string $heroImageUrl = null,
         public array $breadcrumbs = [],
         public array $jsonLd = [],
     ) {}

@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Services\Tables;
 
 use App\Enums\PageStatus;
+use App\Filament\Support\Actions\ViewOnLandingAction;
+use App\Models\Service;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -24,7 +26,8 @@ class ServicesTable
                 TextColumn::make('subtitle')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                ImageColumn::make('hero_image'),
+                ImageColumn::make('hero_image')
+                    ->disk('cloudinary'),
                 TextColumn::make('landing_pages_count')
                     ->label('Landing pages')
                     ->counts('landingPages'),
@@ -44,6 +47,10 @@ class ServicesTable
                     ->options(PageStatus::class),
             ])
             ->recordActions([
+                ViewOnLandingAction::make(
+                    url: fn (Service $record): string => route('services.show', $record),
+                    visible: fn (Service $record): bool => $record->status === PageStatus::Published,
+                ),
                 EditAction::make(),
             ])
             ->toolbarActions([

@@ -6,7 +6,11 @@
     <x-ui.breadcrumb :items="$vm->breadcrumbs" />
 
     <x-section.hero :eyebrow="'Serviço'" :title="$vm->title" :subtitle="$vm->subtitle"
-        :primary="['label' => 'Solicitar orçamento', 'url' => route('contact.show')]" dark />
+        :primary="['label' => 'Solicitar orçamento', 'url' => route('contact.show')]" dark>
+        @if ($vm->heroImageUrl)
+            <img src="{{ $vm->heroImageUrl }}" alt="{{ $vm->title }}" class="h-full w-full rounded-3xl object-cover" />
+        @endif
+    </x-section.hero>
 
     <x-section.problem :title="'Sobre este serviço'">
         <p>{{ $vm->description }}</p>

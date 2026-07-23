@@ -4,10 +4,9 @@ namespace App\Filament\Resources\Posts\Pages;
 
 use App\Enums\PostStatus;
 use App\Filament\Resources\Posts\PostResource;
-use Filament\Actions\Action;
+use App\Filament\Support\Actions\ViewOnLandingAction;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Support\Icons\Heroicon;
 
 class EditPost extends EditRecord
 {
@@ -16,12 +15,11 @@ class EditPost extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('view')
-                ->label('Ver post')
-                ->icon(Heroicon::OutlinedEye)
-                ->url(fn (): string => route('blog.show', $this->record))
-                ->openUrlInNewTab()
-                ->visible(fn (): bool => $this->record->status === PostStatus::Published),
+            ViewOnLandingAction::make(
+                url: fn (): string => route('blog.show', $this->record),
+                visible: fn (): bool => $this->record->status === PostStatus::Published,
+                label: 'Ver post',
+            ),
             DeleteAction::make(),
         ];
     }

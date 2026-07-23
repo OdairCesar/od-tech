@@ -4,6 +4,7 @@ use App\Enums\PageStatus;
 use App\Models\City;
 use App\Models\Service;
 use App\Services\Landing\ServiceCityViewModelFactory;
+use Illuminate\Support\Facades\Storage;
 
 test('makeForService builds a fully composed view model from a service', function () {
     $service = Service::factory()->create([
@@ -22,8 +23,19 @@ test('makeForService builds a fully composed view model from a service', functio
         ->and($vm->benefits)->toBe(['Design responsivo em sua cidade'])
         ->and($vm->faq[0]['question'])->toBe('Atendem sua cidade?')
         ->and($vm->seo->title)->toBe('Criação de Sites — OD Tec')
+        ->and($vm->heroImageUrl)->toBeNull()
         ->and($vm->breadcrumbs)->toHaveCount(3)
         ->and($vm->jsonLd)->not->toBeEmpty();
+});
+
+test('makeForService resolves the hero image url from the cloudinary disk when a hero image is set', function () {
+    Storage::fake('cloudinary');
+
+    $service = Service::factory()->create(['hero_image' => 'services/example-hero']);
+
+    $vm = app(ServiceCityViewModelFactory::class)->makeForService($service);
+
+    expect($vm->heroImageUrl)->toBe(Storage::disk('cloudinary')->url('services/example-hero'));
 });
 
 test('makeForCity builds a fully composed view model from a city', function () {

@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\Posts\Schemas;
 
 use App\Enums\PostStatus;
+use App\Filament\Support\Forms\CloudinaryImageUpload;
 use App\Models\Post;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -14,8 +14,6 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Str;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class PostForm
 {
@@ -52,15 +50,8 @@ class PostForm
                     ->default(fn (): ?int => auth()->id() !== null ? (int) auth()->id() : null),
                 TagsInput::make('tags')
                     ->label('Tags'),
-                FileUpload::make('cover_image')
-                    ->label('Imagem de capa')
-                    ->image()
-                    ->disk('cloudinary')
-                    ->visibility('public')
-                    ->maxSize(5120)
-                    ->getUploadedFileNameForStorageUsing(
-                        fn (TemporaryUploadedFile $file): string => Str::ulid().'-'.str($file->getClientOriginalName())->beforeLast('.'),
-                    ),
+                CloudinaryImageUpload::make('cover_image')
+                    ->label('Imagem de capa'),
                 Select::make('status')
                     ->options(PostStatus::class)
                     ->default(PostStatus::Draft)
