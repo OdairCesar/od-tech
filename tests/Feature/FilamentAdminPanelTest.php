@@ -1,15 +1,19 @@
 <?php
 
 use App\Enums\PageStatus;
+use App\Filament\Resources\LandingPages\Pages\ListLandingPages;
 use App\Filament\Resources\Services\Pages\CreateService;
 use App\Filament\Resources\Services\Pages\EditService;
 use App\Filament\Resources\Services\Pages\ListServices;
+use App\Jobs\RegenerateLandingPages;
 use App\Models\City;
 use App\Models\LandingPage;
 use App\Models\Lead;
 use App\Models\Service;
 use App\Models\User;
 use Filament\Actions\Testing\TestAction;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use OpenAI\Laravel\Facades\OpenAI;
@@ -136,4 +140,26 @@ test('the edit service page view action only shows for published services', func
 
     Livewire::test(EditService::class, ['record' => $draft->getRouteKey()])
         ->assertActionHidden('view');
+});
+
+test('the regenerate all action dispatches the regeneration job and notifies the admin', function () {
+    Bus::fake();
+
+    Livewire::test(ListLandingPages::class)
+        ->callAction('regenerateAll')
+        ->assertNotified();
+
+    Bus::assertDispatched(RegenerateLandingPages::class);
+    expect(Cache::has(RegenerateLandingPages::LOCK_KEY))->toBeTrue();
+});
+
+test('the regenerate all action does not dispatch another job while one is already running', function () {
+    Bus::fake();
+    Cache::put(RegenerateLandingPages::LOCK_KEY, true, now()->addMinutes(30));
+
+    Livewire::test(ListLandingPages::class)
+        ->callAction('regenerateAll')
+        ->assertNotified();
+
+    Bus::assertNotDispatched(RegenerateLandingPages::class);
 });
