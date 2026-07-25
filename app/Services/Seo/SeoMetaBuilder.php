@@ -4,8 +4,10 @@ namespace App\Services\Seo;
 
 use App\Models\City;
 use App\Models\LandingPage;
+use App\Models\PortfolioItem;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\State;
 use App\ViewModels\SeoMeta;
 use Illuminate\Support\Str;
 
@@ -46,6 +48,26 @@ final readonly class SeoMetaBuilder
             description: Str::limit($city->intro, 155),
             canonical: route('cities.show', $city),
             robots: 'index,follow',
+        );
+    }
+
+    public function forState(State $state): SeoMeta
+    {
+        return new SeoMeta(
+            title: $state->meta_title ?? "Tecnologia em {$state->name} — OD Tec",
+            description: $state->meta_description ?? Str::limit($state->intro, 155),
+            canonical: $state->canonical ?? route('states.show', $state),
+            robots: $state->robots ?? 'index,follow',
+        );
+    }
+
+    public function forPortfolioItem(PortfolioItem $portfolioItem): SeoMeta
+    {
+        return new SeoMeta(
+            title: $portfolioItem->meta_title ?? "{$portfolioItem->title} — Portfólio OD Tec",
+            description: $portfolioItem->meta_description ?? Str::limit($portfolioItem->excerpt, 155),
+            canonical: $portfolioItem->canonical ?? route('portfolio.show', $portfolioItem),
+            robots: $portfolioItem->robots ?? 'index,follow',
         );
     }
 

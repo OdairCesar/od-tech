@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Cities\Tables;
+namespace App\Filament\Resources\States\Tables;
 
 use App\Enums\PageStatus;
 use Filament\Actions\BulkActionGroup;
@@ -10,7 +10,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
-class CitiesTable
+class StatesTable
 {
     public static function configure(Table $table): Table
     {
@@ -20,31 +20,11 @@ class CitiesTable
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('stateRecord.name')
-                    ->label('Estado')
-                    ->searchable(),
                 TextColumn::make('uf')
                     ->searchable(),
-                TextColumn::make('region')
-                    ->searchable(),
-                TextColumn::make('population')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('landing_pages_count')
-                    ->label('Landing pages')
-                    ->counts('landingPages'),
-                TextColumn::make('gdp')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('latitude')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('longitude')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('cities_count')
+                    ->label('Cidades')
+                    ->counts('cities'),
                 TextColumn::make('status')
                     ->badge(),
                 TextColumn::make('created_at')
@@ -56,7 +36,7 @@ class CitiesTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('population', 'desc')
+            ->defaultSort('name')
             ->filters([
                 SelectFilter::make('status')
                     ->options(PageStatus::class),

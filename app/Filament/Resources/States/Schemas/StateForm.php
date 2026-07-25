@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Cities\Schemas;
+namespace App\Filament\Resources\States\Schemas;
 
 use App\Enums\PageStatus;
 use Filament\Forms\Components\Select;
@@ -8,7 +8,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
-class CityForm
+class StateForm
 {
     public static function configure(Schema $schema): Schema
     {
@@ -17,37 +17,24 @@ class CityForm
                 TextInput::make('slug')
                     ->required()
                     ->unique(ignoreRecord: true)
-                    ->helperText('Usado na URL, ex: /cidades/{slug} e nas landing pages {servico}-em-{slug}.'),
+                    ->helperText('Usado na URL, ex: /estados/{slug}.'),
                 TextInput::make('name')
-                    ->required(),
-                Select::make('state_id')
-                    ->label('Estado')
-                    ->relationship('stateRecord', 'name')
-                    ->searchable()
-                    ->preload(),
-                TextInput::make('state')
                     ->required(),
                 TextInput::make('uf')
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->length(2),
-                TextInput::make('region')
-                    ->required(),
-                TextInput::make('population')
-                    ->numeric()
-                    ->minValue(0),
-                TextInput::make('gdp')
-                    ->numeric()
-                    ->prefix('R$'),
-                TextInput::make('latitude')
-                    ->numeric(),
-                TextInput::make('longitude')
-                    ->numeric(),
                 Textarea::make('intro')
                     ->required()
                     ->columnSpanFull(),
                 Textarea::make('business_text')
                     ->required()
                     ->columnSpanFull(),
+                TextInput::make('meta_title'),
+                TextInput::make('meta_description'),
+                TextInput::make('canonical'),
+                TextInput::make('robots')
+                    ->default('index,follow'),
                 Select::make('status')
                     ->options(PageStatus::class)
                     ->default(PageStatus::Draft)

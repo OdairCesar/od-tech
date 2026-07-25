@@ -4,8 +4,10 @@ use App\Enums\PageStatus;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\LandingPage;
+use App\Models\PortfolioItem;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\State;
 
 test('sitemap.xml lists static pages and published services, cities and landing pages', function () {
     $service = Service::factory()->create(['status' => PageStatus::Published]);
@@ -18,9 +20,22 @@ test('sitemap.xml lists static pages and published services, cities and landing 
     $response->assertSee(route('home'), false)
         ->assertSee(route('services.index'), false)
         ->assertSee(route('cities.index'), false)
+        ->assertSee(route('states.index'), false)
+        ->assertSee(route('faq.index'), false)
+        ->assertSee(route('portfolio.index'), false)
         ->assertSee(route('services.show', $service), false)
         ->assertSee(route('cities.show', $city), false)
         ->assertSee(route('landing.show', $landingPage), false);
+});
+
+test('sitemap.xml lists published states but excludes drafts', function () {
+    $state = State::factory()->create(['status' => PageStatus::Published]);
+    $draftState = State::factory()->create(['status' => PageStatus::Draft]);
+
+    $response = $this->get(route('sitemap'))->assertOk();
+
+    $response->assertSee(route('states.show', $state), false)
+        ->assertDontSee(route('states.show', $draftState), false);
 });
 
 test('sitemap.xml excludes draft services, cities and landing pages', function () {
@@ -64,6 +79,16 @@ test('sitemap.xml reflects a newly published post after the cache is invalidated
     $this->get(route('sitemap'))
         ->assertOk()
         ->assertSee(route('blog.show', $post), false);
+});
+
+test('sitemap.xml lists published portfolio items but excludes drafts', function () {
+    $item = PortfolioItem::factory()->published()->create();
+    $draftItem = PortfolioItem::factory()->draft()->create();
+
+    $response = $this->get(route('sitemap'))->assertOk();
+
+    $response->assertSee(route('portfolio.show', $item), false)
+        ->assertDontSee(route('portfolio.show', $draftItem), false);
 });
 
 test('robots.txt disallows the admin panel and points to the sitemap', function () {

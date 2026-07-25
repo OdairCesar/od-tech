@@ -5,8 +5,10 @@ namespace App\Services\Seo;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\LandingPage;
+use App\Models\PortfolioItem;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\State;
 use Illuminate\Support\Facades\Cache;
 
 final class SitemapBuilder
@@ -35,7 +37,10 @@ final class SitemapBuilder
             $this->url(route('contact.show')),
             $this->url(route('services.index')),
             $this->url(route('cities.index')),
+            $this->url(route('states.index')),
             $this->url(route('blog.index')),
+            $this->url(route('faq.index')),
+            $this->url(route('portfolio.index')),
         ];
 
         foreach (Service::query()->active()->get() as $service) {
@@ -44,6 +49,14 @@ final class SitemapBuilder
 
         foreach (City::query()->active()->get() as $city) {
             $urls[] = $this->url(route('cities.show', $city), $city->updated_at?->toAtomString());
+        }
+
+        foreach (State::query()->active()->get() as $state) {
+            $urls[] = $this->url(route('states.show', $state), $state->updated_at?->toAtomString());
+        }
+
+        foreach (PortfolioItem::query()->active()->get() as $portfolioItem) {
+            $urls[] = $this->url(route('portfolio.show', $portfolioItem), $portfolioItem->updated_at?->toAtomString());
         }
 
         foreach (LandingPage::query()->published()->get() as $landingPage) {

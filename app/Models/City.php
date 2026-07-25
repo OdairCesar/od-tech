@@ -7,6 +7,7 @@ use Database\Factories\CityFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -21,6 +22,7 @@ class City extends Model
     protected $fillable = [
         'slug',
         'name',
+        'state_id',
         'state',
         'uf',
         'region',
@@ -50,6 +52,17 @@ class City extends Model
     public function landingPages(): HasMany
     {
         return $this->hasMany(LandingPage::class);
+    }
+
+    /**
+     * Named `stateRecord` rather than `state` because the `state` column
+     * already holds a plain-text state name (legacy, kept for now).
+     *
+     * @return BelongsTo<State, $this>
+     */
+    public function stateRecord(): BelongsTo
+    {
+        return $this->belongsTo(State::class, 'state_id');
     }
 
     /**

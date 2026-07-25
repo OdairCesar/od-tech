@@ -54,6 +54,14 @@ class Service extends Model
     }
 
     /**
+     * @return HasMany<PortfolioItem, $this>
+     */
+    public function portfolioItems(): HasMany
+    {
+        return $this->hasMany(PortfolioItem::class);
+    }
+
+    /**
      * @param  Builder<Service>  $query
      * @return Builder<Service>
      */

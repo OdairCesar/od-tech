@@ -13,6 +13,9 @@ test('static pages resolve', function (string $routeName) {
     'contact.show',
     'services.index',
     'cities.index',
+    'states.index',
+    'faq.index',
+    'portfolio.index',
 ]);
 
 test('service show page resolves for a published service', function () {
@@ -59,6 +62,7 @@ test('contact form stores a lead and redirects back', function () {
     $this->post(route('contact.store'), [
         'name' => 'Jane Doe',
         'email' => 'jane@example.com',
+        'phone' => '14999998888',
         'message' => 'Preciso de um orçamento.',
     ])->assertRedirect(route('contact.show'));
 

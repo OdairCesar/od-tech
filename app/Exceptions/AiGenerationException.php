@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use RuntimeException;
+use Throwable;
 
 final class AiGenerationException extends RuntimeException
 {
@@ -14,5 +15,10 @@ final class AiGenerationException extends RuntimeException
     public static function invalidImageResponse(): self
     {
         return new self('A resposta de geração de imagem da IA não contém uma imagem válida.');
+    }
+
+    public static function unreachableUrl(?Throwable $previous = null): self
+    {
+        return new self('Não foi possível acessar o link informado para gerar o texto.', previous: $previous);
     }
 }

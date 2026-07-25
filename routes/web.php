@@ -5,18 +5,25 @@ use App\Http\Controllers\Blog\BlogShowController;
 use App\Http\Controllers\Cities\CityIndexController;
 use App\Http\Controllers\Cities\CityShowController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FaqIndexController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\Portfolio\PortfolioIndexController;
+use App\Http\Controllers\Portfolio\PortfolioShowController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\Services\ServiceIndexController;
 use App\Http\Controllers\Services\ServiceShowController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\States\StateIndexController;
+use App\Http\Controllers\States\StateShowController;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\LandingPage;
+use App\Models\PortfolioItem;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\State;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,6 +42,8 @@ Route::bind('service', fn (string $value): Service => Service::query()->active()
 Route::bind('city', fn (string $value): City => City::query()->active()->where('slug', $value)->firstOrFail());
 Route::bind('landingPage', fn (string $value): LandingPage => LandingPage::query()->published()->where('slug', $value)->firstOrFail());
 Route::bind('post', fn (string $value): Post => Post::query()->published()->where('slug', $value)->firstOrFail());
+Route::bind('state', fn (string $value): State => State::query()->active()->where('slug', $value)->firstOrFail());
+Route::bind('portfolioItem', fn (string $value): PortfolioItem => PortfolioItem::query()->active()->where('slug', $value)->firstOrFail());
 Route::bind('category', fn (string $value): Category => Category::query()->where('slug', $value)->firstOrFail());
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -49,9 +58,18 @@ Route::get('/servicos/{service}', [ServiceShowController::class, 'show'])->name(
 Route::get('/cidades', [CityIndexController::class, 'index'])->name('cities.index');
 Route::get('/cidades/{city}', [CityShowController::class, 'show'])->name('cities.show');
 
+Route::get('/estados', [StateIndexController::class, 'index'])->name('states.index');
+Route::get('/estados/{state}', [StateShowController::class, 'show'])->name('states.show');
+
 Route::get('/blog', [BlogIndexController::class, 'index'])->name('blog.index');
 Route::get('/blog/categoria/{category}', [BlogIndexController::class, 'index'])->name('blog.category');
 Route::get('/blog/{post}', [BlogShowController::class, 'show'])->name('blog.show');
+
+Route::get('/perguntas-frequentes', [FaqIndexController::class, 'index'])->name('faq.index');
+
+Route::get('/portfolio', [PortfolioIndexController::class, 'index'])->name('portfolio.index');
+Route::get('/portfolio/servico/{service}', [PortfolioIndexController::class, 'index'])->name('portfolio.service');
+Route::get('/portfolio/{portfolioItem}', [PortfolioShowController::class, 'show'])->name('portfolio.show');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');

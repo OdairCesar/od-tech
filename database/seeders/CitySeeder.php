@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\PageStatus;
 use App\Models\City;
+use App\Models\State;
 use Illuminate\Database\Seeder;
 
 class CitySeeder extends Seeder
@@ -13,6 +14,8 @@ class CitySeeder extends Seeder
      */
     public function run(): void
     {
+        $stateId = State::query()->where('uf', 'SP')->value('id');
+
         $cities = [
             [
                 'slug' => 'bauru',
@@ -72,10 +75,11 @@ class CitySeeder extends Seeder
         ];
 
         foreach ($cities as $city) {
-            City::query()->firstOrCreate(
+            $record = City::query()->firstOrCreate(
                 ['slug' => $city['slug']],
                 [
                     'name' => $city['name'],
+                    'state_id' => $stateId,
                     'state' => 'São Paulo',
                     'uf' => 'SP',
                     'region' => $city['region'],
@@ -88,6 +92,12 @@ class CitySeeder extends Seeder
                     'status' => PageStatus::Published,
                 ],
             );
+
+            // firstOrCreate() skips the create array for rows that already existed
+            // before the state_id column was introduced, so backfill it here too.
+            if ($record->state_id === null && $stateId !== null) {
+                $record->update(['state_id' => $stateId]);
+            }
         }
     }
 }
