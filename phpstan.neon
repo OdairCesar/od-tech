@@ -5,6 +5,8 @@ parameters:
     paths:
         - app
 
+    parseModelCastsMethod: true
+
     level: max
 
     tmpDir: storage/framework/phpstan

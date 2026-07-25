@@ -49,7 +49,7 @@ class PortfolioItemForm
                                 set_time_limit(120);
 
                                 try {
-                                    $copy = $generator->generate((string) $get('external_url'), self::resolveServiceTitle($get));
+                                    $copy = $generator->generate($get->string('external_url'), self::resolveServiceTitle($get));
                                 } catch (Throwable $exception) {
                                     report($exception);
 
@@ -88,8 +88,8 @@ class PortfolioItemForm
 
                                 try {
                                     $path = $generator->generate(
-                                        title: (string) $get('title'),
-                                        excerpt: $get('excerpt'),
+                                        title: $get->string('title'),
+                                        excerpt: $get->string('excerpt', isNullable: true),
                                         serviceTitle: self::resolveServiceTitle($get),
                                     );
                                 } catch (Throwable $exception) {
@@ -128,6 +128,10 @@ class PortfolioItemForm
     {
         $serviceId = $get('service_id');
 
-        return $serviceId ? Service::query()->find($serviceId)?->title : null;
+        if (! is_int($serviceId) && ! is_string($serviceId)) {
+            return null;
+        }
+
+        return Service::query()->find($serviceId)?->title;
     }
 }

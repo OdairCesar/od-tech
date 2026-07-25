@@ -64,12 +64,16 @@ class ServiceForm
                                 // hitting a lower default max_execution_time mid-request.
                                 set_time_limit(120);
 
+                                $benefits = $get('benefits');
+
                                 try {
                                     $path = $generator->generate(
-                                        title: (string) $get('title'),
-                                        subtitle: $get('subtitle'),
-                                        description: $get('description'),
-                                        benefits: $get('benefits') ?? [],
+                                        title: $get->string('title'),
+                                        subtitle: $get->string('subtitle', isNullable: true),
+                                        description: $get->string('description', isNullable: true),
+                                        benefits: is_array($benefits)
+                                            ? array_values(array_filter($benefits, fn (mixed $value): bool => is_string($value)))
+                                            : [],
                                     );
                                 } catch (Throwable $exception) {
                                     report($exception);
