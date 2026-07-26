@@ -4,6 +4,7 @@ use App\Http\Controllers\Blog\BlogIndexController;
 use App\Http\Controllers\Blog\BlogShowController;
 use App\Http\Controllers\Cities\CityIndexController;
 use App\Http\Controllers\Cities\CityShowController;
+use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FaqIndexController;
 use App\Http\Controllers\HomeController;
@@ -51,6 +52,8 @@ Route::get('/sobre', [PageController::class, 'about'])->name('about');
 
 Route::get('/contato', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/contato', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
+
+Route::get('/consultor-ia', [ConsultationController::class, 'show'])->name('consultation.show');
 
 Route::get('/servicos', [ServiceIndexController::class, 'index'])->name('services.index');
 Route::get('/servicos/{service}', [ServiceShowController::class, 'show'])->name('services.show');

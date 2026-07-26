@@ -5,6 +5,7 @@
         ['label' => 'Processo', 'url' => route('home').'#processo'],
         ['label' => 'Trabalhos', 'url' => route('home').'#trabalhos'],
         ['label' => 'Blog', 'url' => route('blog.index')],
+        ['label' => 'Consultor de IA', 'url' => route('consultation.show')],
     ];
 @endphp
 
