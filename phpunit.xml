@@ -35,5 +35,7 @@
         <env name="CLOUDINARY_CLOUD_NAME" value="test-cloud"/>
         <env name="CLOUDINARY_API_KEY" value="test-key"/>
         <env name="CLOUDINARY_API_SECRET" value="test-secret"/>
+        <env name="AI_TEXT_PROVIDER" value="openai"/>
+        <env name="AI_IMAGE_PROVIDER" value="openai"/>
     </php>
 </phpunit>

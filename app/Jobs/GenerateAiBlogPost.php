@@ -7,6 +7,7 @@ use App\Enums\PostStatus;
 use App\Exceptions\AiGenerationException;
 use App\Models\City;
 use App\Models\Post;
+use App\Services\Ai\TextGenerator;
 use App\Services\Blog\PostAiBrief;
 use App\Services\Blog\PostAiBriefPromptBuilder;
 use App\Services\Blog\PostAiContentParser;
@@ -14,7 +15,6 @@ use App\Services\Blog\PostCoverImageGenerator;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Str;
-use OpenAI\Laravel\Facades\OpenAI;
 use Throwable;
 
 class GenerateAiBlogPost implements ShouldQueue
@@ -35,6 +35,7 @@ class GenerateAiBlogPost implements ShouldQueue
         PostAiContentParser $parser,
         GenerateUniquePostSlug $generateSlug,
         PostCoverImageGenerator $coverImageGenerator,
+        TextGenerator $textGenerator,
     ): void {
         $brief = PostAiBrief::fromArray($this->post->ai_brief ?? []);
         $city = $brief->cityId ? City::query()->find($brief->cityId) : null;
@@ -42,17 +43,16 @@ class GenerateAiBlogPost implements ShouldQueue
         try {
             $messages = $promptBuilder->build($brief, $city);
 
-            $response = OpenAI::chat()->create([
-                'model' => config('services.openai.model'),
-                'messages' => [
+            $result = $textGenerator->generate(
+                [
                     ['role' => 'system', 'content' => $messages['system']],
                     ['role' => 'user', 'content' => $messages['user']],
                 ],
-                'response_format' => $promptBuilder->responseFormat(),
-                'temperature' => 0.7,
-            ]);
+                $promptBuilder->responseFormat(),
+                0.7,
+            );
 
-            $generated = $parser->parse($response->choices[0]->message->content ?? '');
+            $generated = $parser->parse($result->content);
         } catch (AiGenerationException $exception) {
             $this->markFailed($exception);
 
@@ -78,7 +78,7 @@ class GenerateAiBlogPost implements ShouldQueue
             'tags' => $generated->tags,
             'meta_title' => $generated->metaTitle,
             'meta_description' => $generated->metaDescription,
-            'ai_model' => $response->model,
+            'ai_model' => $result->model,
             'status' => PostStatus::Draft,
             'ai_error' => null,
         ]);

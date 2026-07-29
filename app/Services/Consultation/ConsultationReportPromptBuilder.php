@@ -3,6 +3,7 @@
 namespace App\Services\Consultation;
 
 use App\Models\Consultation;
+use App\Services\Ai\JsonSchema;
 use LogicException;
 
 final class ConsultationReportPromptBuilder
@@ -18,10 +19,7 @@ final class ConsultationReportPromptBuilder
         ];
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function responseFormat(): array
+    public function responseFormat(): JsonSchema
     {
         $stringArray = ['type' => 'array', 'items' => ['type' => 'string']];
 
@@ -29,7 +27,6 @@ final class ConsultationReportPromptBuilder
             'type' => 'array',
             'items' => [
                 'type' => 'object',
-                'additionalProperties' => false,
                 'required' => ['name', 'description', 'timeframe', 'investment'],
                 'properties' => [
                     'name' => ['type' => 'string'],
@@ -40,45 +37,40 @@ final class ConsultationReportPromptBuilder
             ],
         ];
 
-        return [
-            'type' => 'json_schema',
-            'json_schema' => [
-                'name' => 'consultation_report',
-                'strict' => true,
-                'schema' => [
-                    'type' => 'object',
-                    'additionalProperties' => false,
-                    'required' => [
-                        'executive_summary', 'problem', 'objectives', 'features_essential',
-                        'features_recommended', 'features_future', 'user_profiles', 'current_flow',
-                        'desired_flow', 'integrations', 'tech_stack', 'complexity',
-                        'complexity_justification', 'mvp', 'next_phases', 'estimate_timeframe',
-                        'estimate_investment', 'delivery_stages', 'open_questions',
-                    ],
-                    'properties' => [
-                        'executive_summary' => ['type' => 'string'],
-                        'problem' => ['type' => 'string'],
-                        'objectives' => $stringArray,
-                        'features_essential' => $stringArray,
-                        'features_recommended' => $stringArray,
-                        'features_future' => $stringArray,
-                        'user_profiles' => $stringArray,
-                        'current_flow' => ['type' => 'string'],
-                        'desired_flow' => ['type' => 'string'],
-                        'integrations' => $stringArray,
-                        'tech_stack' => $stringArray,
-                        'complexity' => ['type' => 'string', 'enum' => ['baixa', 'media', 'alta', 'muito_alta']],
-                        'complexity_justification' => ['type' => 'string'],
-                        'mvp' => ['type' => 'string'],
-                        'next_phases' => $stringArray,
-                        'estimate_timeframe' => ['type' => 'string'],
-                        'estimate_investment' => ['type' => 'string'],
-                        'delivery_stages' => $deliveryStages,
-                        'open_questions' => $stringArray,
-                    ],
+        return new JsonSchema(
+            name: 'consultation_report',
+            schema: [
+                'type' => 'object',
+                'required' => [
+                    'executive_summary', 'problem', 'objectives', 'features_essential',
+                    'features_recommended', 'features_future', 'user_profiles', 'current_flow',
+                    'desired_flow', 'integrations', 'tech_stack', 'complexity',
+                    'complexity_justification', 'mvp', 'next_phases', 'estimate_timeframe',
+                    'estimate_investment', 'delivery_stages', 'open_questions',
+                ],
+                'properties' => [
+                    'executive_summary' => ['type' => 'string'],
+                    'problem' => ['type' => 'string'],
+                    'objectives' => $stringArray,
+                    'features_essential' => $stringArray,
+                    'features_recommended' => $stringArray,
+                    'features_future' => $stringArray,
+                    'user_profiles' => $stringArray,
+                    'current_flow' => ['type' => 'string'],
+                    'desired_flow' => ['type' => 'string'],
+                    'integrations' => $stringArray,
+                    'tech_stack' => $stringArray,
+                    'complexity' => ['type' => 'string', 'enum' => ['baixa', 'media', 'alta', 'muito_alta']],
+                    'complexity_justification' => ['type' => 'string'],
+                    'mvp' => ['type' => 'string'],
+                    'next_phases' => $stringArray,
+                    'estimate_timeframe' => ['type' => 'string'],
+                    'estimate_investment' => ['type' => 'string'],
+                    'delivery_stages' => $deliveryStages,
+                    'open_questions' => $stringArray,
                 ],
             ],
-        ];
+        );
     }
 
     private function systemPrompt(): string

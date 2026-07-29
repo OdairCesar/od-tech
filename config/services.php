@@ -46,6 +46,17 @@ return [
         'image_quality' => env('OPENAI_IMAGE_QUALITY', 'high'),
     ],
 
+    'gemini' => [
+        'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
+        'image_model' => env('GEMINI_IMAGE_MODEL', 'gemini-2.5-flash-image'),
+        'image_aspect_ratio' => env('GEMINI_IMAGE_ASPECT_RATIO', '16:9'),
+    ],
+
+    'ai' => [
+        'text_provider' => env('AI_TEXT_PROVIDER', 'openai'),
+        'image_provider' => env('AI_IMAGE_PROVIDER', 'openai'),
+    ],
+
     'google_analytics' => [
         'id' => env('GOOGLE_ANALYTICS_ID'),
     ],

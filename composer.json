@@ -12,6 +12,7 @@
         "cloudinary/cloudinary_php": "^3.1",
         "codebar-ag/laravel-flysystem-cloudinary": "^13.0",
         "filament/filament": "^4.0",
+        "google-gemini-php/laravel": "^2.0",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^3.8",

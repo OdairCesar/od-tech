@@ -6,6 +6,7 @@ use App\Enums\ConsultationStatus;
 use App\Exceptions\AiGenerationException;
 use App\Mail\NewConsultationCompleted;
 use App\Models\Consultation;
+use App\Services\Ai\TextGenerator;
 use App\Services\Consultation\ConsultationReportParser;
 use App\Services\Consultation\ConsultationReportPromptBuilder;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,7 +14,6 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use OpenAI\Laravel\Facades\OpenAI;
 use Throwable;
 
 class GenerateConsultationReport implements ShouldQueue
@@ -32,21 +32,21 @@ class GenerateConsultationReport implements ShouldQueue
     public function handle(
         ConsultationReportPromptBuilder $promptBuilder,
         ConsultationReportParser $parser,
+        TextGenerator $textGenerator,
     ): void {
         try {
             $messages = $promptBuilder->build($this->consultation);
 
-            $response = OpenAI::chat()->create([
-                'model' => config('services.openai.model'),
-                'messages' => [
+            $result = $textGenerator->generate(
+                [
                     ['role' => 'system', 'content' => $messages['system']],
                     ['role' => 'user', 'content' => $messages['user']],
                 ],
-                'response_format' => $promptBuilder->responseFormat(),
-                'temperature' => 0.5,
-            ]);
+                $promptBuilder->responseFormat(),
+                0.5,
+            );
 
-            $report = $parser->parse($response->choices[0]->message->content ?? '');
+            $report = $parser->parse($result->content);
         } catch (AiGenerationException $exception) {
             $this->markFailed($exception);
 
@@ -55,7 +55,7 @@ class GenerateConsultationReport implements ShouldQueue
 
         $this->consultation->update([
             'report' => $report->toArray(),
-            'ai_model' => $response->model,
+            'ai_model' => $result->model,
             'status' => ConsultationStatus::Completed,
             'ai_error' => null,
         ]);

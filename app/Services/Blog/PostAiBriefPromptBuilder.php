@@ -5,6 +5,7 @@ namespace App\Services\Blog;
 use App\Enums\ContentStructure;
 use App\Enums\ReaderInterest;
 use App\Models\City;
+use App\Services\Ai\JsonSchema;
 
 final class PostAiBriefPromptBuilder
 {
@@ -102,34 +103,26 @@ final class PostAiBriefPromptBuilder
         return implode("\n", $lines);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function responseFormat(): array
+    public function responseFormat(): JsonSchema
     {
-        return [
-            'type' => 'json_schema',
-            'json_schema' => [
-                'name' => 'blog_post',
-                'strict' => true,
-                'schema' => [
-                    'type' => 'object',
-                    'additionalProperties' => false,
-                    'required' => ['title', 'excerpt', 'content_html', 'meta_title', 'meta_description', 'tags', 'image_prompt'],
-                    'properties' => [
-                        'title' => ['type' => 'string'],
-                        'excerpt' => ['type' => 'string'],
-                        'content_html' => ['type' => 'string'],
-                        'meta_title' => ['type' => 'string'],
-                        'meta_description' => ['type' => 'string'],
-                        'tags' => [
-                            'type' => 'array',
-                            'items' => ['type' => 'string'],
-                        ],
-                        'image_prompt' => ['type' => 'string'],
+        return new JsonSchema(
+            name: 'blog_post',
+            schema: [
+                'type' => 'object',
+                'required' => ['title', 'excerpt', 'content_html', 'meta_title', 'meta_description', 'tags', 'image_prompt'],
+                'properties' => [
+                    'title' => ['type' => 'string'],
+                    'excerpt' => ['type' => 'string'],
+                    'content_html' => ['type' => 'string'],
+                    'meta_title' => ['type' => 'string'],
+                    'meta_description' => ['type' => 'string'],
+                    'tags' => [
+                        'type' => 'array',
+                        'items' => ['type' => 'string'],
                     ],
+                    'image_prompt' => ['type' => 'string'],
                 ],
             ],
-        ];
+        );
     }
 }

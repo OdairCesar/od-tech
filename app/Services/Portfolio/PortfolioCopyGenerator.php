@@ -3,13 +3,16 @@
 namespace App\Services\Portfolio;
 
 use App\Exceptions\AiGenerationException;
+use App\Services\Ai\JsonSchema;
+use App\Services\Ai\TextGenerator;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
-use OpenAI\Laravel\Facades\OpenAI;
 use Throwable;
 
 final class PortfolioCopyGenerator
 {
+    public function __construct(private readonly TextGenerator $textGenerator) {}
+
     /**
      * @return array{title: string, excerpt: string}
      */
@@ -17,17 +20,16 @@ final class PortfolioCopyGenerator
     {
         $pageText = $this->fetchPageText($url);
 
-        $response = OpenAI::chat()->create([
-            'model' => config('services.openai.model'),
-            'messages' => [
+        $result = $this->textGenerator->generate(
+            [
                 ['role' => 'system', 'content' => $this->systemPrompt()],
                 ['role' => 'user', 'content' => $this->userPrompt($pageText, $serviceTitle)],
             ],
-            'response_format' => $this->responseFormat(),
-            'temperature' => 0.7,
-        ]);
+            $this->responseFormat(),
+            0.7,
+        );
 
-        return $this->parse($response->choices[0]->message->content ?? '');
+        return $this->parse($result->content);
     }
 
     private function fetchPageText(string $url): string
@@ -71,27 +73,19 @@ final class PortfolioCopyGenerator
         return implode("\n", $lines);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function responseFormat(): array
+    private function responseFormat(): JsonSchema
     {
-        return [
-            'type' => 'json_schema',
-            'json_schema' => [
-                'name' => 'portfolio_copy',
-                'strict' => true,
-                'schema' => [
-                    'type' => 'object',
-                    'additionalProperties' => false,
-                    'required' => ['title', 'excerpt'],
-                    'properties' => [
-                        'title' => ['type' => 'string'],
-                        'excerpt' => ['type' => 'string'],
-                    ],
+        return new JsonSchema(
+            name: 'portfolio_copy',
+            schema: [
+                'type' => 'object',
+                'required' => ['title', 'excerpt'],
+                'properties' => [
+                    'title' => ['type' => 'string'],
+                    'excerpt' => ['type' => 'string'],
                 ],
             ],
-        ];
+        );
     }
 
     /**

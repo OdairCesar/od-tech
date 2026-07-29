@@ -3,6 +3,7 @@
 namespace App\Services\Consultation;
 
 use App\Models\Consultation;
+use App\Services\Ai\JsonSchema;
 use LogicException;
 
 final class ConsultationPromptBuilder
@@ -24,27 +25,19 @@ final class ConsultationPromptBuilder
         return $messages;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function responseFormat(): array
+    public function responseFormat(): JsonSchema
     {
-        return [
-            'type' => 'json_schema',
-            'json_schema' => [
-                'name' => 'consultation_turn',
-                'strict' => true,
-                'schema' => [
-                    'type' => 'object',
-                    'additionalProperties' => false,
-                    'required' => ['reply', 'ready_for_report'],
-                    'properties' => [
-                        'reply' => ['type' => 'string'],
-                        'ready_for_report' => ['type' => 'boolean'],
-                    ],
+        return new JsonSchema(
+            name: 'consultation_turn',
+            schema: [
+                'type' => 'object',
+                'required' => ['reply', 'ready_for_report'],
+                'properties' => [
+                    'reply' => ['type' => 'string'],
+                    'ready_for_report' => ['type' => 'boolean'],
                 ],
             ],
-        ];
+        );
     }
 
     private function systemPrompt(): string

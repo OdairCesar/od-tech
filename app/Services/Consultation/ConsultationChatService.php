@@ -5,12 +5,13 @@ namespace App\Services\Consultation;
 use App\Enums\ConsultationStatus;
 use App\Exceptions\AiGenerationException;
 use App\Models\Consultation;
-use OpenAI\Laravel\Facades\OpenAI;
+use App\Services\Ai\TextGenerator;
 
 final class ConsultationChatService
 {
     public function __construct(
         private readonly ConsultationPromptBuilder $promptBuilder,
+        private readonly TextGenerator $textGenerator,
     ) {}
 
     public function startInterview(Consultation $consultation): void
@@ -46,14 +47,13 @@ final class ConsultationChatService
 
     private function requestTurn(Consultation $consultation): ConsultationTurnResult
     {
-        $response = OpenAI::chat()->create([
-            'model' => config('services.openai.model'),
-            'messages' => $this->promptBuilder->messagesFor($consultation),
-            'response_format' => $this->promptBuilder->responseFormat(),
-            'temperature' => 0.6,
-        ]);
+        $result = $this->textGenerator->generate(
+            $this->promptBuilder->messagesFor($consultation),
+            $this->promptBuilder->responseFormat(),
+            0.6,
+        );
 
-        return $this->parse($response->choices[0]->message->content ?? '');
+        return $this->parse($result->content);
     }
 
     private function parse(string $jsonPayload): ConsultationTurnResult
