@@ -70,7 +70,7 @@ final class PostAiBriefPromptBuilder
         $lines[] = $brief->brandPresence->promptInstruction();
 
         if ($city instanceof City) {
-            $lines[] = "O artigo deve ser localizado para a cidade de {$city->name}/{$city->uf}, mencionando o contexto local quando fizer sentido.";
+            $lines[] = "O artigo deve ser localizado para a cidade de {$city->name}/{$city->state->uf}, mencionando o contexto local quando fizer sentido.";
         } else {
             $lines[] = 'O artigo deve ser genérico, sem foco em uma cidade específica.';
         }

@@ -80,8 +80,6 @@ class CitySeeder extends Seeder
                 [
                     'name' => $city['name'],
                     'state_id' => $stateId,
-                    'state' => 'São Paulo',
-                    'uf' => 'SP',
                     'region' => $city['region'],
                     'population' => $city['population'],
                     'gdp' => $city['gdp'],

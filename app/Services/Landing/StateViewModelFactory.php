@@ -26,7 +26,7 @@ final readonly class StateViewModelFactory
         $cities = $state->cities()->active()->orderByDesc('population')->get()
             ->map(fn (City $city): array => [
                 'name' => $city->name,
-                'uf' => $city->uf,
+                'uf' => $state->uf,
                 'intro' => $city->intro,
                 'url' => route('cities.show', $city),
             ])

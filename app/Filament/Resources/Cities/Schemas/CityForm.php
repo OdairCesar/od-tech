@@ -22,14 +22,10 @@ class CityForm
                     ->required(),
                 Select::make('state_id')
                     ->label('Estado')
-                    ->relationship('stateRecord', 'name')
+                    ->relationship('state', 'name')
                     ->searchable()
-                    ->preload(),
-                TextInput::make('state')
+                    ->preload()
                     ->required(),
-                TextInput::make('uf')
-                    ->required()
-                    ->length(2),
                 TextInput::make('region')
                     ->required(),
                 TextInput::make('population')

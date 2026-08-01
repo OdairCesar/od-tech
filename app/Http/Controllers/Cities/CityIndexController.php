@@ -19,7 +19,7 @@ class CityIndexController extends Controller
         ];
 
         return view('pages.cities.index', [
-            'cities' => City::query()->active()->orderByDesc('population')->get(),
+            'cities' => City::query()->active()->with('state')->orderByDesc('population')->get(),
             'breadcrumbs' => $breadcrumbs,
             'jsonLd' => [$this->structuredData->breadcrumbList($breadcrumbs)],
         ]);

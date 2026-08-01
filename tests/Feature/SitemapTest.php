@@ -1,12 +1,15 @@
 <?php
 
 use App\Enums\PageStatus;
+use App\Enums\ServiceClusterStatus;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\LandingPage;
 use App\Models\PortfolioItem;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\ServiceCluster;
+use App\Models\ServiceClusterLandingPage;
 use App\Models\State;
 
 test('sitemap.xml lists static pages and published services, cities and landing pages', function () {
@@ -89,6 +92,20 @@ test('sitemap.xml lists published portfolio items but excludes drafts', function
 
     $response->assertSee(route('portfolio.show', $item), false)
         ->assertDontSee(route('portfolio.show', $draftItem), false);
+});
+
+test('sitemap.xml lists published service clusters and cluster landing pages, but excludes drafts', function () {
+    $service = Service::factory()->create(['status' => PageStatus::Published]);
+    $cluster = ServiceCluster::factory()->create(['service_id' => $service->id, 'status' => ServiceClusterStatus::Published]);
+    $draftCluster = ServiceCluster::factory()->create(['service_id' => $service->id, 'status' => ServiceClusterStatus::Draft]);
+    $city = City::factory()->create(['status' => PageStatus::Published]);
+    $pivot = ServiceClusterLandingPage::where('service_cluster_id', $cluster->id)->where('city_id', $city->id)->sole();
+
+    $response = $this->get(route('sitemap'))->assertOk();
+
+    $response->assertSee(route('services.clusters.show', [$service, $cluster]), false)
+        ->assertSee(route('services.clusters.city.show', [$service, $cluster, $city]), false)
+        ->assertDontSee(route('services.clusters.show', [$service, $draftCluster]), false);
 });
 
 test('robots.txt disallows the admin panel and points to the sitemap', function () {

@@ -4,6 +4,7 @@ use App\Models\City;
 use App\Models\LandingPage;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\State;
 use App\Services\Seo\StructuredDataService;
 
 beforeEach(function () {
@@ -19,7 +20,7 @@ test('organization returns a schema.org Organization block', function () {
 });
 
 test('localBusiness returns a schema.org LocalBusiness block for the city', function () {
-    $city = City::factory()->create(['name' => 'Bauru', 'uf' => 'SP']);
+    $city = City::factory()->create(['name' => 'Bauru', 'state_id' => State::factory()->create(['uf' => 'SP'])->id]);
 
     $data = $this->service->localBusiness($city);
 

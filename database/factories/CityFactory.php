@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\PageStatus;
 use App\Models\City;
+use App\Models\State;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -24,8 +25,7 @@ class CityFactory extends Factory
         return [
             'slug' => Str::slug($name),
             'name' => $name,
-            'state' => 'São Paulo',
-            'uf' => 'SP',
+            'state_id' => State::query()->inRandomOrder()->value('id') ?? State::factory(),
             'region' => $this->faker->randomElement(['Centro-Oeste Paulista', 'Interior de São Paulo', 'Grande São Paulo']),
             'population' => $this->faker->numberBetween(20_000, 1_200_000),
             'gdp' => $this->faker->randomFloat(2, 100_000_000, 9_000_000_000),

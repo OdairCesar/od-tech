@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\City;
 use App\Models\Service;
+use App\Models\State;
 use App\Services\Seo\ContentComposer;
 use App\Services\Seo\StructuredDataService;
 use Illuminate\Contracts\View\View;
@@ -30,9 +30,16 @@ class HomeController extends Controller
                 'url' => route('services.show', $service),
             ]);
 
+        $states = State::query()->active()
+            ->with(['cities' => fn ($query) => $query->active()->orderByDesc('population')])
+            ->orderBy('name')
+            ->get()
+            ->filter(fn (State $state): bool => $state->cities->isNotEmpty())
+            ->values();
+
         return view('pages.home', [
             'services' => $services,
-            'cities' => City::query()->active()->orderByDesc('population')->take(6)->get(),
+            'states' => $states,
             'jsonLd' => [$this->structuredData->organization()],
         ]);
     }

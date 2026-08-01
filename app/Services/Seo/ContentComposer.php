@@ -50,7 +50,7 @@ final class ContentComposer
 
         return [
             '{cidade}' => $city->name,
-            '{uf}' => $city->uf,
+            '{uf}' => $city->state->uf,
             '{regiao}' => $city->region,
         ];
     }

@@ -19,21 +19,7 @@
         <x-section.faq eyebrow="Dúvidas frequentes" title="Perguntas frequentes" :items="$vm->faq" />
     @endif
 
-    @if (! empty($vm->relatedLinks))
-        <section class="bg-slate-50 px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
-            <div class="mx-auto max-w-6xl">
-                <x-ui.section-title eyebrow="Continue explorando" class="mb-10">Você também pode se interessar</x-ui.section-title>
-
-                <div class="flex flex-wrap gap-3">
-                    @foreach ($vm->relatedLinks as $link)
-                        <a href="{{ $link['url'] }}" class="rounded-full border border-slate-800/10 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 hover:text-blue-600">
-                            {{ $link['label'] }}
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
+    <x-section.related-links :links="$vm->relatedLinks" />
 
     <x-section.cta title="Vamos construir seu próximo produto digital?"
         :button="['label' => $vm->ctaLabel, 'url' => route('contact.show')]" />

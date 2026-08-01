@@ -62,21 +62,7 @@
         ['title' => 'Aplicativo mobile', 'desc' => 'Apps nativos e híbridos, do zero até a loja de aplicativos.', 'url' => route('services.show', 'desenvolvimento-de-app'), 'image' => 'imgs/card-apps.webp'],
     ]" />
 
-    @if ($cities->isNotEmpty())
-        <section class="bg-slate-50 px-5 py-16 sm:px-8 sm:py-[110px] min-[960px]:px-14">
-            <div class="mx-auto max-w-[1180px]">
-                <x-ui.section-title eyebrow="Cidades atendidas" titleClass="text-[28px] sm:text-[38px]" class="mb-10" data-reveal>Onde já estamos presentes</x-ui.section-title>
-
-                <div class="flex flex-wrap gap-3">
-                    @foreach ($cities as $city)
-                        <a href="{{ route('cities.show', $city) }}" class="rounded-full border border-slate-800/10 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 hover:text-blue-600">
-                            {{ $city->name }}/{{ $city->uf }}
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
+    <x-section.cities-by-state :states="$states" />
 
     <x-section.cta title="Vamos construir seu próximo produto digital?"
         description="Conte um pouco sobre a sua empresa e o que você precisa — a resposta é rápida e sem compromisso."

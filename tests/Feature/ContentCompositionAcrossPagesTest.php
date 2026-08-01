@@ -2,6 +2,7 @@
 
 use App\Models\City;
 use App\Models\Service;
+use App\Models\State;
 
 test('home composes service subtitles generically, without leaking raw tokens', function () {
     Service::factory()->create(['subtitle' => 'Atendemos empresas de {cidade}/{uf}']);
@@ -41,7 +42,7 @@ test('service show composes subtitle, description, benefits and faq generically'
 
 test('city show composes the service subtitle with the actual city context', function () {
     $service = Service::factory()->create(['subtitle' => 'Presença digital em {cidade}/{uf}']);
-    $city = City::factory()->create(['name' => 'Bauru', 'uf' => 'SP']);
+    $city = City::factory()->create(['name' => 'Bauru', 'state_id' => State::factory()->create(['uf' => 'SP'])->id]);
 
     $this->get(route('cities.show', $city))
         ->assertOk()

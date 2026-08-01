@@ -7,12 +7,12 @@ test('a city resolves its linked state record through the state_id foreign key',
     $state = State::factory()->create();
     $city = City::factory()->create(['state_id' => $state->id]);
 
-    expect($city->stateRecord)->not->toBeNull()
-        ->and($city->stateRecord->is($state))->toBeTrue();
+    expect($city->state)->not->toBeNull()
+        ->and($city->state->is($state))->toBeTrue();
 });
 
 test('a city without a linked state returns null for the state record', function () {
     $city = City::factory()->create(['state_id' => null]);
 
-    expect($city->stateRecord)->toBeNull();
+    expect($city->state)->toBeNull();
 });

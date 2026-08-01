@@ -20,10 +20,11 @@ class CitiesTable
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('stateRecord.name')
+                TextColumn::make('state.name')
                     ->label('Estado')
                     ->searchable(),
-                TextColumn::make('uf')
+                TextColumn::make('state.uf')
+                    ->label('UF')
                     ->searchable(),
                 TextColumn::make('region')
                     ->searchable(),

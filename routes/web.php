@@ -13,6 +13,8 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\Portfolio\PortfolioIndexController;
 use App\Http\Controllers\Portfolio\PortfolioShowController;
 use App\Http\Controllers\RobotsController;
+use App\Http\Controllers\Services\ServiceClusterCityController;
+use App\Http\Controllers\Services\ServiceClusterShowController;
 use App\Http\Controllers\Services\ServiceIndexController;
 use App\Http\Controllers\Services\ServiceShowController;
 use App\Http\Controllers\SitemapController;
@@ -24,6 +26,7 @@ use App\Models\LandingPage;
 use App\Models\PortfolioItem;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\ServiceCluster;
 use App\Models\State;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +49,7 @@ Route::bind('post', fn (string $value): Post => Post::query()->published()->wher
 Route::bind('state', fn (string $value): State => State::query()->active()->where('slug', $value)->firstOrFail());
 Route::bind('portfolioItem', fn (string $value): PortfolioItem => PortfolioItem::query()->active()->where('slug', $value)->firstOrFail());
 Route::bind('category', fn (string $value): Category => Category::query()->where('slug', $value)->firstOrFail());
+Route::bind('cluster', fn (string $value): ServiceCluster => ServiceCluster::query()->published()->where('slug', $value)->firstOrFail());
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sobre', [PageController::class, 'about'])->name('about');
@@ -57,6 +61,8 @@ Route::get('/consultor-ia', [ConsultationController::class, 'show'])->name('cons
 
 Route::get('/servicos', [ServiceIndexController::class, 'index'])->name('services.index');
 Route::get('/servicos/{service}', [ServiceShowController::class, 'show'])->name('services.show');
+Route::get('/servicos/{service}/{cluster}', [ServiceClusterShowController::class, 'show'])->name('services.clusters.show');
+Route::get('/servicos/{service}/{cluster}/{city}', [ServiceClusterCityController::class, 'show'])->name('services.clusters.city.show');
 
 Route::get('/cidades', [CityIndexController::class, 'index'])->name('cities.index');
 Route::get('/cidades/{city}', [CityShowController::class, 'show'])->name('cities.show');

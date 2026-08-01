@@ -6,6 +6,7 @@ use App\Models\City;
 use App\Models\LandingPage;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\ServiceClusterLandingPage;
 use Illuminate\Support\Facades\Storage;
 
 final class StructuredDataService
@@ -36,7 +37,7 @@ final class StructuredDataService
             'address' => [
                 '@type' => 'PostalAddress',
                 'addressLocality' => $city->name,
-                'addressRegion' => $city->uf,
+                'addressRegion' => $city->state->uf,
                 'addressCountry' => 'BR',
             ],
         ];
@@ -47,14 +48,27 @@ final class StructuredDataService
      */
     public function service(LandingPage $landingPage): array
     {
-        $service = $landingPage->service;
-        $city = $landingPage->city;
+        return $this->serviceForCity($landingPage->service->title, $landingPage->service->subtitle, $landingPage->city);
+    }
 
+    /**
+     * @return array<string, mixed>
+     */
+    public function serviceForClusterCity(ServiceClusterLandingPage $pivot): array
+    {
+        return $this->serviceForCity($pivot->serviceCluster->title, $pivot->serviceCluster->subtitle, $pivot->city);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function serviceForCity(?string $name, ?string $description, City $city): array
+    {
         return [
             '@context' => 'https://schema.org',
             '@type' => 'Service',
-            'name' => "{$service->title} em {$city->name}",
-            'description' => $service->subtitle,
+            'name' => "{$name} em {$city->name}",
+            'description' => $description,
             'areaServed' => [
                 '@type' => 'City',
                 'name' => $city->name,

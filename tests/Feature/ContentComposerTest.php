@@ -1,13 +1,14 @@
 <?php
 
 use App\Models\City;
+use App\Models\State;
 use App\Services\Seo\ContentComposer;
 
 beforeEach(function () {
     $this->composer = new ContentComposer;
     $this->city = City::factory()->make([
         'name' => 'Bauru',
-        'uf' => 'SP',
+        'state_id' => State::factory()->create(['uf' => 'SP'])->id,
         'region' => 'Centro-Oeste Paulista',
     ]);
 });

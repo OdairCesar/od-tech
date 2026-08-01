@@ -4,6 +4,11 @@ namespace App\Services\Seo;
 
 use App\Models\City;
 use App\Models\LandingPage;
+use App\Models\Service;
+use App\Models\ServiceCluster;
+use App\Models\ServiceClusterLandingPage;
+use Closure;
+use Illuminate\Support\Collection;
 
 final class InternalLinkService
 {
@@ -15,20 +20,41 @@ final class InternalLinkService
     public function otherCitiesForService(LandingPage $landingPage): array
     {
         $city = $landingPage->city;
-        $sameRegionCityIds = City::query()->sameRegionAs($city)->pluck('id');
 
         $candidates = $landingPage->service->landingPages()
             ->published()
             ->where('city_id', '!=', $city->id)
             ->with('city')
-            ->get()
-            ->sortByDesc(fn (LandingPage $candidate): bool => $sameRegionCityIds->contains($candidate->city_id))
-            ->take($this->limit);
+            ->get();
+
+        return $this->sortedCityLinks(
+            $candidates,
+            $city,
+            cityResolver: fn (LandingPage $candidate): City => $candidate->city,
+            urlResolver: fn (LandingPage $candidate): string => route('landing.show', $candidate),
+        );
+    }
+
+    /**
+     * Ranks candidates by same-region-first, then maps each to a {label, url} link.
+     *
+     * @template TCandidate of LandingPage|ServiceClusterLandingPage
+     *
+     * @param  Collection<int, TCandidate>  $candidates
+     * @param  Closure(TCandidate): City  $cityResolver
+     * @param  Closure(TCandidate): string  $urlResolver
+     * @return array<int, array{label: string, url: string}>
+     */
+    private function sortedCityLinks(Collection $candidates, City $currentCity, Closure $cityResolver, Closure $urlResolver): array
+    {
+        $sameRegionCityIds = City::query()->sameRegionAs($currentCity)->pluck('id');
 
         return $candidates
-            ->map(fn (LandingPage $candidate): array => [
-                'label' => $candidate->city->name,
-                'url' => route('landing.show', $candidate),
+            ->sortByDesc(fn ($candidate): bool => $sameRegionCityIds->contains($cityResolver($candidate)->id))
+            ->take($this->limit)
+            ->map(fn ($candidate): array => [
+                'label' => $cityResolver($candidate)->name,
+                'url' => $urlResolver($candidate),
             ])
             ->values()
             ->all();
@@ -63,6 +89,76 @@ final class InternalLinkService
         return [
             ...$this->otherCitiesForService($landingPage),
             ...$this->otherServicesForCity($landingPage),
+        ];
+    }
+
+    /**
+     * @return array<int, array{label: string, url: string}>
+     */
+    public function clustersForService(Service $service): array
+    {
+        return $service->clusters()
+            ->published()
+            ->take($this->limit)
+            ->get()
+            ->map(fn (ServiceCluster $cluster): array => [
+                'label' => (string) $cluster->title,
+                'url' => route('services.clusters.show', [$service, $cluster]),
+            ])
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @return array<int, array{label: string, url: string}>
+     */
+    public function otherClustersForService(ServiceCluster $cluster): array
+    {
+        $candidates = $cluster->service->clusters()
+            ->published()
+            ->where('id', '!=', $cluster->id)
+            ->take($this->limit)
+            ->get();
+
+        return $candidates
+            ->map(fn (ServiceCluster $candidate): array => [
+                'label' => (string) $candidate->title,
+                'url' => route('services.clusters.show', [$cluster->service, $candidate]),
+            ])
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @return array<int, array{label: string, url: string}>
+     */
+    public function otherCitiesForCluster(ServiceClusterLandingPage $pivot): array
+    {
+        $cluster = $pivot->serviceCluster;
+        $city = $pivot->city;
+
+        $candidates = $cluster->landingPages()
+            ->published()
+            ->where('city_id', '!=', $city->id)
+            ->with('city')
+            ->get();
+
+        return $this->sortedCityLinks(
+            $candidates,
+            $city,
+            cityResolver: fn (ServiceClusterLandingPage $candidate): City => $candidate->city,
+            urlResolver: fn (ServiceClusterLandingPage $candidate): string => route('services.clusters.city.show', [$cluster->service, $cluster, $candidate->city]),
+        );
+    }
+
+    /**
+     * @return array<int, array{label: string, url: string}>
+     */
+    public function relatedLinksForCluster(ServiceClusterLandingPage $pivot): array
+    {
+        return [
+            ...$this->otherCitiesForCluster($pivot),
+            ...$this->otherClustersForService($pivot->serviceCluster),
         ];
     }
 }

@@ -7,6 +7,8 @@ use App\Models\LandingPage;
 use App\Models\PortfolioItem;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\ServiceCluster;
+use App\Models\ServiceClusterLandingPage;
 use App\Models\State;
 use App\ViewModels\SeoMeta;
 use Illuminate\Support\Str;
@@ -41,10 +43,39 @@ final readonly class SeoMetaBuilder
         );
     }
 
+    public function forServiceCluster(ServiceCluster $cluster): SeoMeta
+    {
+        $description = $cluster->meta_description
+            ?? Str::limit($this->composer->compose((string) $cluster->description), 155);
+
+        return new SeoMeta(
+            title: $cluster->meta_title ?? "{$cluster->title} — OD Tec",
+            description: $description,
+            canonical: $cluster->canonical ?? route('services.clusters.show', [$cluster->service, $cluster]),
+            robots: $cluster->robots ?? 'index,follow',
+        );
+    }
+
+    public function forServiceClusterLandingPage(ServiceClusterLandingPage $pivot): SeoMeta
+    {
+        $cluster = $pivot->serviceCluster;
+        $city = $pivot->city;
+
+        $description = $pivot->meta_description
+            ?? Str::limit($this->composer->compose((string) $cluster->description, $city), 155);
+
+        return new SeoMeta(
+            title: $pivot->meta_title ?? "{$cluster->title} em {$city->name} | OD Tec",
+            description: $description,
+            canonical: $pivot->canonical ?? route('services.clusters.city.show', [$cluster->service, $cluster, $city]),
+            robots: $pivot->robots ?? 'index,follow',
+        );
+    }
+
     public function forCity(City $city): SeoMeta
     {
         return new SeoMeta(
-            title: "Tecnologia em {$city->name}/{$city->uf} — OD Tec",
+            title: "Tecnologia em {$city->name}/{$city->state->uf} — OD Tec",
             description: Str::limit($city->intro, 155),
             canonical: route('cities.show', $city),
             robots: 'index,follow',

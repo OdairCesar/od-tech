@@ -8,6 +8,8 @@ use App\Models\LandingPage;
 use App\Models\PortfolioItem;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\ServiceCluster;
+use App\Models\ServiceClusterLandingPage;
 use App\Models\State;
 use Illuminate\Support\Facades\Cache;
 
@@ -45,6 +47,17 @@ final class SitemapBuilder
 
         foreach (Service::query()->active()->get() as $service) {
             $urls[] = $this->url(route('services.show', $service), $service->updated_at?->toAtomString());
+        }
+
+        foreach (ServiceCluster::query()->published()->with('service')->get() as $cluster) {
+            $urls[] = $this->url(route('services.clusters.show', [$cluster->service, $cluster]), $cluster->updated_at?->toAtomString());
+        }
+
+        foreach (ServiceClusterLandingPage::query()->published()->with('serviceCluster.service', 'city')->get() as $clusterLandingPage) {
+            $urls[] = $this->url(
+                route('services.clusters.city.show', [$clusterLandingPage->serviceCluster->service, $clusterLandingPage->serviceCluster, $clusterLandingPage->city]),
+                $clusterLandingPage->updated_at?->toAtomString(),
+            );
         }
 
         foreach (City::query()->active()->get() as $city) {

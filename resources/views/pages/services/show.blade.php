@@ -22,6 +22,8 @@
         <x-section.faq eyebrow="Dúvidas frequentes" title="Perguntas frequentes" :items="$vm->faq" />
     @endif
 
+    <x-section.related-links :links="$vm->relatedLinks" />
+
     <x-section.cta title="Vamos construir seu próximo produto digital?"
         :button="['label' => 'Falar com a OD Tec', 'url' => route('contact.show')]" />
 </x-layout.app>

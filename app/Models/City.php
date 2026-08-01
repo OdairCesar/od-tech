@@ -23,8 +23,6 @@ class City extends Model
         'slug',
         'name',
         'state_id',
-        'state',
-        'uf',
         'region',
         'population',
         'gdp',
@@ -55,14 +53,19 @@ class City extends Model
     }
 
     /**
-     * Named `stateRecord` rather than `state` because the `state` column
-     * already holds a plain-text state name (legacy, kept for now).
-     *
+     * @return HasMany<ServiceClusterLandingPage, $this>
+     */
+    public function clusterLandingPages(): HasMany
+    {
+        return $this->hasMany(ServiceClusterLandingPage::class);
+    }
+
+    /**
      * @return BelongsTo<State, $this>
      */
-    public function stateRecord(): BelongsTo
+    public function state(): BelongsTo
     {
-        return $this->belongsTo(State::class, 'state_id');
+        return $this->belongsTo(State::class);
     }
 
     /**

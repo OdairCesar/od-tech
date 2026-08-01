@@ -4,6 +4,9 @@ use App\Models\City;
 use App\Models\LandingPage;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\ServiceCluster;
+use App\Models\ServiceClusterLandingPage;
+use App\Models\State;
 use App\Services\Seo\SeoMetaBuilder;
 
 test('it generates fallback meta when the landing page has no overrides', function () {
@@ -101,8 +104,63 @@ test('manual overrides on the post take precedence over generated meta', functio
         ->and($seo->robots)->toBe('noindex,nofollow');
 });
 
+test('forServiceCluster generates title, description and canonical for the cluster page', function () {
+    $service = Service::factory()->create(['slug' => 'criacao-de-sites']);
+    $cluster = ServiceCluster::factory()->create([
+        'service_id' => $service->id,
+        'title' => 'Loja Virtual',
+        'description' => 'Lojas virtuais rápidas para empresas de {cidade}.',
+    ]);
+
+    $seo = app(SeoMetaBuilder::class)->forServiceCluster($cluster);
+
+    expect($seo->title)->toBe('Loja Virtual — OD Tec')
+        ->and($seo->description)->toBe('Lojas virtuais rápidas para empresas de sua cidade.')
+        ->and($seo->canonical)->toBe(route('services.clusters.show', [$service, $cluster]))
+        ->and($seo->robots)->toBe('index,follow');
+});
+
+test('forServiceClusterLandingPage generates fallback meta when the pivot has no overrides', function () {
+    $service = Service::factory()->create();
+    $cluster = ServiceCluster::factory()->create([
+        'service_id' => $service->id,
+        'title' => 'Loja Virtual',
+        'description' => 'Lojas virtuais rápidas para empresas de {cidade}.',
+    ]);
+    $city = City::factory()->create(['name' => 'Bauru']);
+    $pivot = ServiceClusterLandingPage::where('service_cluster_id', $cluster->id)->where('city_id', $city->id)->sole();
+
+    $seo = app(SeoMetaBuilder::class)->forServiceClusterLandingPage($pivot);
+
+    expect($seo->title)->toBe('Loja Virtual em Bauru | OD Tec')
+        ->and($seo->description)->toBe('Lojas virtuais rápidas para empresas de Bauru.')
+        ->and($seo->canonical)->toBe(route('services.clusters.city.show', [$service, $cluster, $city]))
+        ->and($seo->robots)->toBe('index,follow');
+});
+
+test('manual overrides on the cluster landing page take precedence over generated meta', function () {
+    $service = Service::factory()->create();
+    $cluster = ServiceCluster::factory()->create(['service_id' => $service->id]);
+    $city = City::factory()->create();
+    $pivot = ServiceClusterLandingPage::where('service_cluster_id', $cluster->id)->where('city_id', $city->id)->sole();
+
+    $pivot->update([
+        'meta_title' => 'Título customizado',
+        'meta_description' => 'Descrição customizada',
+        'canonical' => 'https://od.tech/customizada',
+        'robots' => 'noindex,nofollow',
+    ]);
+
+    $seo = app(SeoMetaBuilder::class)->forServiceClusterLandingPage($pivot->fresh(['serviceCluster.service', 'city']));
+
+    expect($seo->title)->toBe('Título customizado')
+        ->and($seo->description)->toBe('Descrição customizada')
+        ->and($seo->canonical)->toBe('https://od.tech/customizada')
+        ->and($seo->robots)->toBe('noindex,nofollow');
+});
+
 test('forCity generates title, description and canonical for the city page', function () {
-    $city = City::factory()->create(['name' => 'Bauru', 'uf' => 'SP', 'intro' => 'Bauru é um polo tecnológico da região.']);
+    $city = City::factory()->create(['name' => 'Bauru', 'state_id' => State::factory()->create(['uf' => 'SP'])->id, 'intro' => 'Bauru é um polo tecnológico da região.']);
 
     $seo = app(SeoMetaBuilder::class)->forCity($city);
 

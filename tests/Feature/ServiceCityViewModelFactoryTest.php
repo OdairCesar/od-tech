@@ -3,6 +3,7 @@
 use App\Enums\PageStatus;
 use App\Models\City;
 use App\Models\Service;
+use App\Models\State;
 use App\Services\Landing\ServiceCityViewModelFactory;
 use Illuminate\Support\Facades\Storage;
 
@@ -40,7 +41,7 @@ test('makeForService resolves the hero image url from the cloudinary disk when a
 
 test('makeForCity builds a fully composed view model from a city', function () {
     $service = Service::factory()->create(['subtitle' => 'Presença digital em {cidade}/{uf}']);
-    $city = City::factory()->create(['name' => 'Bauru', 'uf' => 'SP']);
+    $city = City::factory()->create(['name' => 'Bauru', 'state_id' => State::factory()->create(['uf' => 'SP'])->id]);
 
     $vm = app(ServiceCityViewModelFactory::class)->makeForCity($city);
 

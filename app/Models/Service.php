@@ -62,6 +62,14 @@ class Service extends Model
     }
 
     /**
+     * @return HasMany<ServiceCluster, $this>
+     */
+    public function clusters(): HasMany
+    {
+        return $this->hasMany(ServiceCluster::class);
+    }
+
+    /**
      * @param  Builder<Service>  $query
      * @return Builder<Service>
      */

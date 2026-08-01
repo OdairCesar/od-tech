@@ -12,7 +12,7 @@
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($cities as $city)
                     <x-ui.card>
-                        <h3 class="text-lg font-bold">{{ $city->name }}/{{ $city->uf }}</h3>
+                        <h3 class="text-lg font-bold">{{ $city->name }}/{{ $city->state->uf }}</h3>
                         <p class="text-[15px] leading-relaxed text-slate-500">{{ str($city->intro)->limit(110) }}</p>
                         <a href="{{ route('cities.show', $city) }}" class="text-sm font-bold text-blue-600">Ver serviços em {{ $city->name }} &rarr;</a>
                     </x-ui.card>

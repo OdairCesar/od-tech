@@ -6,6 +6,7 @@ use App\Models\City;
 use App\Models\LandingPage;
 use App\Models\Service;
 use App\Services\Seo\ContentComposer;
+use App\Services\Seo\InternalLinkService;
 use App\Services\Seo\SeoMetaBuilder;
 use App\Services\Seo\StructuredDataService;
 use App\ViewModels\CityViewModel;
@@ -18,6 +19,7 @@ final readonly class ServiceCityViewModelFactory
         private ContentComposer $composer,
         private SeoMetaBuilder $seoMetaBuilder,
         private StructuredDataService $structuredData,
+        private InternalLinkService $internalLinks,
     ) {}
 
     public function makeForService(Service $service): ServiceViewModel
@@ -46,6 +48,7 @@ final readonly class ServiceCityViewModelFactory
             seo: $this->seoMetaBuilder->forService($service),
             heroImageUrl: $service->hero_image ? Storage::disk('cloudinary')->url($service->hero_image) : null,
             breadcrumbs: $breadcrumbs,
+            relatedLinks: $this->internalLinks->clustersForService($service),
             jsonLd: $jsonLd,
         );
     }
@@ -75,7 +78,7 @@ final readonly class ServiceCityViewModelFactory
 
         return new CityViewModel(
             name: $city->name,
-            uf: $city->uf,
+            uf: $city->state->uf,
             region: $city->region,
             intro: $city->intro,
             businessText: $city->business_text,
