@@ -22,11 +22,12 @@ final readonly class SeoMetaBuilder
         $service = $landingPage->service;
         $city = $landingPage->city;
 
-        $description = $landingPage->meta_description
-            ?? Str::limit($this->composer->compose($service->description, $city), 155);
+        $description = $landingPage->meta_description !== null
+            ? $this->composer->compose($landingPage->meta_description, $city)
+            : Str::limit($this->composer->compose($service->description, $city), 155);
 
         return new SeoMeta(
-            title: $landingPage->meta_title ?? "{$service->title} em {$city->name} | OD Tec",
+            title: $this->composer->compose($landingPage->meta_title ?? "{$service->title} em {$city->name} | OD Tec", $city),
             description: $description,
             canonical: $landingPage->canonical ?? route('landing.show', $landingPage),
             robots: $landingPage->robots ?? 'index,follow',
@@ -45,11 +46,12 @@ final readonly class SeoMetaBuilder
 
     public function forServiceCluster(ServiceCluster $cluster): SeoMeta
     {
-        $description = $cluster->meta_description
-            ?? Str::limit($this->composer->compose((string) $cluster->description), 155);
+        $description = $cluster->meta_description !== null
+            ? $this->composer->compose($cluster->meta_description)
+            : Str::limit($this->composer->compose((string) $cluster->description), 155);
 
         return new SeoMeta(
-            title: $cluster->meta_title ?? "{$cluster->title} — OD Tec",
+            title: $this->composer->compose($cluster->meta_title ?? "{$cluster->title} — OD Tec"),
             description: $description,
             canonical: $cluster->canonical ?? route('services.clusters.show', [$cluster->service, $cluster]),
             robots: $cluster->robots ?? 'index,follow',
@@ -61,11 +63,12 @@ final readonly class SeoMetaBuilder
         $cluster = $pivot->serviceCluster;
         $city = $pivot->city;
 
-        $description = $pivot->meta_description
-            ?? Str::limit($this->composer->compose((string) $cluster->description, $city), 155);
+        $description = $pivot->meta_description !== null
+            ? $this->composer->compose($pivot->meta_description, $city)
+            : Str::limit($this->composer->compose((string) $cluster->description, $city), 155);
 
         return new SeoMeta(
-            title: $pivot->meta_title ?? "{$cluster->title} em {$city->name} | OD Tec",
+            title: $this->composer->compose($pivot->meta_title ?? "{$cluster->title} em {$city->name} | OD Tec", $city),
             description: $description,
             canonical: $pivot->canonical ?? route('services.clusters.city.show', [$cluster->service, $cluster, $city]),
             robots: $pivot->robots ?? 'index,follow',
