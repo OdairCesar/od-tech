@@ -58,12 +58,12 @@ final readonly class LandingPageViewModelFactory
         ]));
 
         return new LandingPageViewModel(
-            h1: $landingPage->custom_h1 ?? "{$service->title} em {$city->name}",
-            subtitle: $landingPage->custom_subtitle ?? $this->composer->compose($service->subtitle, $city),
-            intro: $landingPage->custom_intro ?? $this->composer->compose($service->description, $city),
+            h1: $this->composer->compose($landingPage->custom_h1 ?? "{$service->title} em {$city->name}", $city),
+            subtitle: $this->composer->compose($landingPage->custom_subtitle ?? $service->subtitle, $city),
+            intro: $this->composer->compose($landingPage->custom_intro ?? $service->description, $city),
             benefits: $benefits,
             faq: $faq,
-            ctaLabel: $landingPage->custom_cta ?? 'Solicitar orçamento',
+            ctaLabel: $this->composer->compose($landingPage->custom_cta ?? 'Solicitar orçamento', $city),
             seo: $this->seoMetaBuilder->forLandingPage($landingPage),
             breadcrumbs: $breadcrumbs,
             relatedLinks: $this->internalLinks->relatedLinks($landingPage),

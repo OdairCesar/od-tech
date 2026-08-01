@@ -84,12 +84,12 @@ final readonly class ServiceClusterViewModelFactory
         ]));
 
         return new LandingPageViewModel(
-            h1: $pivot->custom_h1 ?? "{$clusterTitle} em {$city->name}",
-            subtitle: $pivot->custom_subtitle ?? $this->composer->compose((string) $cluster->subtitle, $city),
-            intro: $pivot->custom_intro ?? $this->composer->compose((string) $cluster->description, $city),
+            h1: $this->composer->compose($pivot->custom_h1 ?? "{$clusterTitle} em {$city->name}", $city),
+            subtitle: $this->composer->compose($pivot->custom_subtitle ?? (string) $cluster->subtitle, $city),
+            intro: $this->composer->compose($pivot->custom_intro ?? (string) $cluster->description, $city),
             benefits: $benefits,
             faq: $faq,
-            ctaLabel: $pivot->custom_cta ?? 'Solicitar orçamento',
+            ctaLabel: $this->composer->compose($pivot->custom_cta ?? 'Solicitar orçamento', $city),
             seo: $this->seoMetaBuilder->forServiceClusterLandingPage($pivot),
             breadcrumbs: $breadcrumbs,
             relatedLinks: $this->internalLinks->relatedLinksForCluster($pivot),

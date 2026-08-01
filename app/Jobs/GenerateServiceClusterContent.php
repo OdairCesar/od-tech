@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Actions\ServiceCluster\GenerateUniqueServiceClusterSlug;
 use App\Enums\ServiceClusterStatus;
 use App\Exceptions\AiGenerationException;
 use App\Models\ServiceCluster;
@@ -32,7 +31,6 @@ class GenerateServiceClusterContent implements ShouldQueue
     public function handle(
         ServiceClusterAiBriefPromptBuilder $promptBuilder,
         ServiceClusterAiContentParser $parser,
-        GenerateUniqueServiceClusterSlug $generateSlug,
         ServiceClusterCoverImageGenerator $coverImageGenerator,
         TextGenerator $textGenerator,
     ): void {
@@ -69,7 +67,6 @@ class GenerateServiceClusterContent implements ShouldQueue
         $this->cluster->update([
             'name' => $generated->title,
             'title' => $generated->title,
-            'slug' => $generateSlug($generated->title, ignoreId: $this->cluster->id),
             'subtitle' => $generated->subtitle,
             'description' => $generated->description,
             'benefits' => $generated->benefits,
