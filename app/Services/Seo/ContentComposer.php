@@ -11,6 +11,11 @@ final class ContentComposer
         return strtr($template, $this->tokens($city));
     }
 
+    public function hasLocationTokens(string $template): bool
+    {
+        return str_contains($template, '{cidade}') || str_contains($template, '{uf}') || str_contains($template, '{regiao}');
+    }
+
     /**
      * @param  array<int, string>  $benefits
      * @return array<int, string>

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Storage;
 
 final class StructuredDataService
 {
+    public function __construct(private readonly ContentComposer $composer) {}
+
     /**
      * @return array<string, mixed>
      */
@@ -64,11 +66,15 @@ final class StructuredDataService
      */
     private function serviceForCity(?string $name, ?string $description, City $city): array
     {
+        $name = (string) $name;
+        $hasLocationToken = $this->composer->hasLocationTokens($name);
+        $composedName = $this->composer->compose($name, $city);
+
         return [
             '@context' => 'https://schema.org',
             '@type' => 'Service',
-            'name' => "{$name} em {$city->name}",
-            'description' => $description,
+            'name' => $hasLocationToken ? $composedName : "{$composedName} em {$city->name}",
+            'description' => $description !== null ? $this->composer->compose($description, $city) : null,
             'areaServed' => [
                 '@type' => 'City',
                 'name' => $city->name,

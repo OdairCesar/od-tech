@@ -27,6 +27,8 @@ class ServiceClusterLandingPagesTable
                     ->label('Cidade')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('slug')
+                    ->searchable(),
                 TextColumn::make('status')
                     ->badge(),
                 TextColumn::make('meta_title')
@@ -56,11 +58,10 @@ class ServiceClusterLandingPagesTable
                 Action::make('view')
                     ->label('Ver no site')
                     ->icon('heroicon-o-arrow-top-right-on-square')
-                    ->visible(fn (): bool => Route::has('services.clusters.city.show'))
-                    ->url(fn (ServiceClusterLandingPage $record) => route('services.clusters.city.show', [
+                    ->visible(fn (): bool => Route::has('services.clusters.show'))
+                    ->url(fn (ServiceClusterLandingPage $record) => route('services.clusters.show', [
                         $record->serviceCluster->service,
-                        $record->serviceCluster,
-                        $record->city,
+                        $record->slug,
                     ]))
                     ->openUrlInNewTab(),
                 EditAction::make(),

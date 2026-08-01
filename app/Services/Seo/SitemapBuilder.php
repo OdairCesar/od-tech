@@ -53,9 +53,9 @@ final class SitemapBuilder
             $urls[] = $this->url(route('services.clusters.show', [$cluster->service, $cluster]), $cluster->updated_at?->toAtomString());
         }
 
-        foreach (ServiceClusterLandingPage::query()->published()->with('serviceCluster.service', 'city')->get() as $clusterLandingPage) {
+        foreach (ServiceClusterLandingPage::query()->published()->with('serviceCluster.service')->get() as $clusterLandingPage) {
             $urls[] = $this->url(
-                route('services.clusters.city.show', [$clusterLandingPage->serviceCluster->service, $clusterLandingPage->serviceCluster, $clusterLandingPage->city]),
+                route('services.clusters.show', [$clusterLandingPage->serviceCluster->service, $clusterLandingPage->slug]),
                 $clusterLandingPage->updated_at?->toAtomString(),
             );
         }

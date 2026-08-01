@@ -67,10 +67,14 @@ final readonly class SeoMetaBuilder
             ? $this->composer->compose($pivot->meta_description, $city)
             : Str::limit($this->composer->compose((string) $cluster->description, $city), 155);
 
+        $defaultTitle = $this->composer->hasLocationTokens((string) $cluster->title)
+            ? "{$cluster->title} | OD Tec"
+            : "{$cluster->title} em {$city->name} | OD Tec";
+
         return new SeoMeta(
-            title: $this->composer->compose($pivot->meta_title ?? "{$cluster->title} em {$city->name} | OD Tec", $city),
+            title: $this->composer->compose($pivot->meta_title ?? $defaultTitle, $city),
             description: $description,
-            canonical: $pivot->canonical ?? route('services.clusters.city.show', [$cluster->service, $cluster, $city]),
+            canonical: $pivot->canonical ?? route('services.clusters.show', [$cluster->service, $pivot->slug]),
             robots: $pivot->robots ?? 'index,follow',
         );
     }

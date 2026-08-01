@@ -9,11 +9,18 @@ use App\Models\ServiceClusterLandingPage;
 
 final class SyncClusterLandingPage
 {
+    public function __construct(
+        private readonly GenerateClusterLandingSlug $generateClusterLandingSlug,
+    ) {}
+
     public function __invoke(ServiceCluster $cluster, City $city): void
     {
         ServiceClusterLandingPage::query()->firstOrCreate(
             ['service_cluster_id' => $cluster->id, 'city_id' => $city->id],
-            ['status' => PageStatus::Published],
+            [
+                'slug' => ($this->generateClusterLandingSlug)($cluster, $city),
+                'status' => PageStatus::Published,
+            ],
         );
     }
 }

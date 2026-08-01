@@ -4,6 +4,7 @@ use App\Enums\PageStatus;
 use App\Models\City;
 use App\Models\LandingPage;
 use App\Models\Service;
+use App\Models\ServiceCluster;
 use App\Services\Seo\InternalLinkService;
 
 test('otherCitiesForService lists other published cities for the same service, prioritizing the same region', function () {
@@ -43,6 +44,18 @@ test('otherServicesForCity lists other published services available in the same 
 
     expect($links)->toHaveCount(1)
         ->and($links[0]['label'])->toBe('Desenvolvimento de App');
+});
+
+test('clustersForService composes {cidade} tokens in the cluster title instead of leaking them into the link label', function () {
+    $service = Service::factory()->create();
+    ServiceCluster::factory()->create([
+        'service_id' => $service->id,
+        'title' => 'Loja Virtual para Empresas de {cidade}',
+    ]);
+
+    $links = app(InternalLinkService::class)->clustersForService($service);
+
+    expect($links[0]['label'])->toBe('Loja Virtual para Empresas de sua cidade');
 });
 
 test('relatedLinks combines other cities and other services', function () {

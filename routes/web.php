@@ -13,7 +13,6 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\Portfolio\PortfolioIndexController;
 use App\Http\Controllers\Portfolio\PortfolioShowController;
 use App\Http\Controllers\RobotsController;
-use App\Http\Controllers\Services\ServiceClusterCityController;
 use App\Http\Controllers\Services\ServiceClusterShowController;
 use App\Http\Controllers\Services\ServiceIndexController;
 use App\Http\Controllers\Services\ServiceShowController;
@@ -61,8 +60,16 @@ Route::get('/consultor-ia', [ConsultationController::class, 'show'])->name('cons
 
 Route::get('/servicos', [ServiceIndexController::class, 'index'])->name('services.index');
 Route::get('/servicos/{service}', [ServiceShowController::class, 'show'])->name('services.show');
-Route::get('/servicos/{service}/{cluster}', [ServiceClusterShowController::class, 'show'])->name('services.clusters.show');
-Route::get('/servicos/{service}/{cluster}/{city}', [ServiceClusterCityController::class, 'show'])->name('services.clusters.city.show');
+Route::get('/servicos/{service}/{slug}', [ServiceClusterShowController::class, 'show'])->name('services.clusters.show');
+
+// Formato antigo (cluster e cidade em segmentos separados) — mantido só para redirecionar
+// permanentemente para a URL atual ({cluster}-em-{cidade} em um único segmento) e não
+// perder indexação de links que já apontem para o formato anterior.
+Route::get('/servicos/{service}/{cluster}/{city}', fn (Service $service, ServiceCluster $cluster, City $city) => redirect()->route(
+    'services.clusters.show',
+    [$service, "{$cluster->slug}-em-{$city->slug}"],
+    301,
+));
 
 Route::get('/cidades', [CityIndexController::class, 'index'])->name('cities.index');
 Route::get('/cidades/{city}', [CityShowController::class, 'show'])->name('cities.show');

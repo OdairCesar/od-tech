@@ -24,6 +24,7 @@ class ServiceClusterLandingPage extends Model
     protected $fillable = [
         'service_cluster_id',
         'city_id',
+        'slug',
         'meta_title',
         'meta_description',
         'canonical',

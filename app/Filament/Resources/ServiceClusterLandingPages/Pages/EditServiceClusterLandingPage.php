@@ -22,11 +22,10 @@ class EditServiceClusterLandingPage extends EditRecord
             Action::make('view')
                 ->label('Ver no site')
                 ->icon('heroicon-o-arrow-top-right-on-square')
-                ->visible(fn (): bool => Route::has('services.clusters.city.show'))
-                ->url(fn (): string => route('services.clusters.city.show', [
+                ->visible(fn (): bool => Route::has('services.clusters.show'))
+                ->url(fn (): string => route('services.clusters.show', [
                     $this->getRecord()->serviceCluster->service,
-                    $this->getRecord()->serviceCluster,
-                    $this->getRecord()->city,
+                    $this->getRecord()->slug,
                 ]))
                 ->openUrlInNewTab(),
             DeleteAction::make(),

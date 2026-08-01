@@ -134,7 +134,7 @@ test('forServiceClusterLandingPage generates fallback meta when the pivot has no
 
     expect($seo->title)->toBe('Loja Virtual em Bauru | OD Tec')
         ->and($seo->description)->toBe('Lojas virtuais rápidas para empresas de Bauru.')
-        ->and($seo->canonical)->toBe(route('services.clusters.city.show', [$service, $cluster, $city]))
+        ->and($seo->canonical)->toBe(route('services.clusters.show', [$service, $pivot->slug]))
         ->and($seo->robots)->toBe('index,follow');
 });
 

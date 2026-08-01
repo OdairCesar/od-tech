@@ -2,6 +2,8 @@
 
 use App\Models\City;
 use App\Models\Service;
+use App\Models\ServiceCluster;
+use App\Models\ServiceClusterLandingPage;
 use App\Models\State;
 
 test('home composes service subtitles generically, without leaking raw tokens', function () {
@@ -38,6 +40,23 @@ test('service show composes subtitle, description, benefits and faq generically'
         ->assertSee('Atendem sua cidade?')
         ->assertDontSee('{cidade}', false)
         ->assertDontSee('{regiao}', false);
+});
+
+test('cluster city page composes the H1 and meta title without leaking the token or duplicating the city name', function () {
+    $service = Service::factory()->create();
+    $cluster = ServiceCluster::factory()->create([
+        'service_id' => $service->id,
+        'title' => 'Desenvolvimento de Sites Personalizados em {cidade}',
+        'subtitle' => 'E-commerce rápido para empresas de {cidade}.',
+    ]);
+    $city = City::factory()->create(['name' => 'Mauá']);
+    $pivot = ServiceClusterLandingPage::where('service_cluster_id', $cluster->id)->where('city_id', $city->id)->sole();
+
+    $this->get(route('services.clusters.show', [$service, $pivot->slug]))
+        ->assertOk()
+        ->assertSee('Desenvolvimento de Sites Personalizados em Mauá')
+        ->assertDontSee('{cidade}', false)
+        ->assertDontSee('Mauá em Mauá', false);
 });
 
 test('city show composes the service subtitle with the actual city context', function () {

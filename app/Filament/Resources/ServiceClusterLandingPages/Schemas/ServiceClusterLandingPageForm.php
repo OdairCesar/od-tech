@@ -23,6 +23,10 @@ class ServiceClusterLandingPageForm
                     ->relationship('city', 'name')
                     ->searchable()
                     ->required(),
+                TextInput::make('slug')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->helperText('Gerado automaticamente como {cluster}-em-{cidade}; só altere se souber o que está fazendo.'),
                 TextInput::make('meta_title')
                     ->helperText('Deixe em branco para usar o título gerado automaticamente.'),
                 TextInput::make('meta_description')

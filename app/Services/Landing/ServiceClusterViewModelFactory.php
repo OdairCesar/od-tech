@@ -25,7 +25,7 @@ final readonly class ServiceClusterViewModelFactory
     {
         $cluster->loadMissing('service');
         $service = $cluster->service;
-        $clusterTitle = (string) $cluster->title;
+        $clusterTitle = $this->composer->compose((string) $cluster->title);
 
         $breadcrumbs = [
             ['label' => 'Início', 'url' => route('home')],
@@ -65,7 +65,9 @@ final readonly class ServiceClusterViewModelFactory
         $cluster = $pivot->serviceCluster;
         $service = $cluster->service;
         $city = $pivot->city;
-        $clusterTitle = (string) $cluster->title;
+        $rawClusterTitle = (string) $cluster->title;
+        $clusterTitle = $this->composer->compose($rawClusterTitle, $city);
+        $defaultH1 = $this->composer->hasLocationTokens($rawClusterTitle) ? $clusterTitle : "{$clusterTitle} em {$city->name}";
 
         $benefits = $this->composer->composeList($cluster->benefits ?? [], $city);
         $faq = $this->composer->composeFaq($cluster->faq ?? [], $city);
@@ -84,7 +86,7 @@ final readonly class ServiceClusterViewModelFactory
         ]));
 
         return new LandingPageViewModel(
-            h1: $this->composer->compose($pivot->custom_h1 ?? "{$clusterTitle} em {$city->name}", $city),
+            h1: $this->composer->compose($pivot->custom_h1 ?? $defaultH1, $city),
             subtitle: $this->composer->compose($pivot->custom_subtitle ?? (string) $cluster->subtitle, $city),
             intro: $this->composer->compose($pivot->custom_intro ?? (string) $cluster->description, $city),
             benefits: $benefits,

@@ -12,7 +12,10 @@ use Illuminate\Support\Collection;
 
 final class InternalLinkService
 {
-    public function __construct(private readonly int $limit = 6) {}
+    public function __construct(
+        private readonly ContentComposer $composer,
+        private readonly int $limit = 6,
+    ) {}
 
     /**
      * @return array<int, array{label: string, url: string}>
@@ -102,7 +105,7 @@ final class InternalLinkService
             ->take($this->limit)
             ->get()
             ->map(fn (ServiceCluster $cluster): array => [
-                'label' => (string) $cluster->title,
+                'label' => $this->composer->compose((string) $cluster->title),
                 'url' => route('services.clusters.show', [$service, $cluster]),
             ])
             ->values()
@@ -122,7 +125,7 @@ final class InternalLinkService
 
         return $candidates
             ->map(fn (ServiceCluster $candidate): array => [
-                'label' => (string) $candidate->title,
+                'label' => $this->composer->compose((string) $candidate->title),
                 'url' => route('services.clusters.show', [$cluster->service, $candidate]),
             ])
             ->values()
@@ -147,7 +150,7 @@ final class InternalLinkService
             $candidates,
             $city,
             cityResolver: fn (ServiceClusterLandingPage $candidate): City => $candidate->city,
-            urlResolver: fn (ServiceClusterLandingPage $candidate): string => route('services.clusters.city.show', [$cluster->service, $cluster, $candidate->city]),
+            urlResolver: fn (ServiceClusterLandingPage $candidate): string => route('services.clusters.show', [$cluster->service, $candidate->slug]),
         );
     }
 

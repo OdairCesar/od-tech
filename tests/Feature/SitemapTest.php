@@ -104,7 +104,7 @@ test('sitemap.xml lists published service clusters and cluster landing pages, bu
     $response = $this->get(route('sitemap'))->assertOk();
 
     $response->assertSee(route('services.clusters.show', [$service, $cluster]), false)
-        ->assertSee(route('services.clusters.city.show', [$service, $cluster, $city]), false)
+        ->assertSee(route('services.clusters.show', [$service, $pivot->slug]), false)
         ->assertDontSee(route('services.clusters.show', [$service, $draftCluster]), false);
 });
 

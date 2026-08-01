@@ -4,11 +4,13 @@ use App\Models\City;
 use App\Models\LandingPage;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\ServiceCluster;
+use App\Models\ServiceClusterLandingPage;
 use App\Models\State;
 use App\Services\Seo\StructuredDataService;
 
 beforeEach(function () {
-    $this->service = new StructuredDataService;
+    $this->service = app(StructuredDataService::class);
 });
 
 test('organization returns a schema.org Organization block', function () {
@@ -39,6 +41,35 @@ test('service returns a schema.org Service block tied to the landing page', func
     expect($data['@type'])->toBe('Service')
         ->and($data['name'])->toBe('Criação de Sites em Bauru')
         ->and($data['areaServed']['name'])->toBe('Bauru');
+});
+
+test('service composes {cidade} tokens in the subtitle instead of leaking them into the JSON-LD', function () {
+    $service = Service::factory()->create([
+        'title' => 'Criação de Sites',
+        'subtitle' => 'Presença digital para empresas de {cidade}.',
+    ]);
+    $city = City::factory()->create(['name' => 'Bauru']);
+    $landingPage = LandingPage::where('service_id', $service->id)->where('city_id', $city->id)->sole();
+
+    $data = $this->service->service($landingPage);
+
+    expect($data['description'])->toBe('Presença digital para empresas de Bauru.');
+});
+
+test('serviceForClusterCity composes the cluster title/subtitle without duplicating the city name', function () {
+    $service = Service::factory()->create();
+    $cluster = ServiceCluster::factory()->create([
+        'service_id' => $service->id,
+        'title' => 'Loja Virtual para Empresas de {cidade}',
+        'subtitle' => 'E-commerce rápido para empresas de {cidade}.',
+    ]);
+    $city = City::factory()->create(['name' => 'Bauru']);
+    $pivot = ServiceClusterLandingPage::where('service_cluster_id', $cluster->id)->where('city_id', $city->id)->sole();
+
+    $data = $this->service->serviceForClusterCity($pivot);
+
+    expect($data['name'])->toBe('Loja Virtual para Empresas de Bauru')
+        ->and($data['description'])->toBe('E-commerce rápido para empresas de Bauru.');
 });
 
 test('serviceGeneric returns a schema.org Service block without a city context', function () {
