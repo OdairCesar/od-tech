@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,4 +25,20 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
+
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            // URL que não bate com nenhuma rota registrada ($request->route() === null):
+            // redireciona direto para a home. Conteúdo que existe como rota mas está
+            // despublicado/ausente (service/city/landing em draft, tool/submission inválidos)
+            // cai na renderização padrão (errors/404.blade.php), que mostra a página 404 com
+            // redirecionamento automático após alguns segundos.
+            if (
+                $request->route() === null
+                && ! $request->is('admin/*')
+                && ! $request->is('api/*')
+                && ! $request->expectsJson()
+            ) {
+                return redirect()->route('home');
+            }
+        });
     })->create();
