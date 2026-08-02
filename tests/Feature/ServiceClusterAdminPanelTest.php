@@ -9,6 +9,7 @@ use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use OpenAI\Laravel\Facades\OpenAI;
+use OpenAI\Responses\Chat\CreateResponse;
 use OpenAI\Responses\Images\CreateResponse as ImageCreateResponse;
 
 beforeEach(function () {
@@ -19,6 +20,16 @@ test('the generate hero image action fills the hero_image field with an ai gener
     Storage::fake('cloudinary');
 
     OpenAI::fake([
+        CreateResponse::fake([
+            'model' => 'gpt-4.1',
+            'choices' => [[
+                'message' => [
+                    'content' => json_encode([
+                        'image_prompt' => 'A modern online storefront on a laptop screen.',
+                    ]),
+                ],
+            ]],
+        ]),
         ImageCreateResponse::fake([
             'data' => [['b64_json' => base64_encode('fake-image-bytes')]],
         ]),

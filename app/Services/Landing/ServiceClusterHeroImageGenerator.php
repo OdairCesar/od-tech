@@ -2,43 +2,97 @@
 
 namespace App\Services\Landing;
 
-use App\Services\Ai\AiImageGenerator;
+use App\Exceptions\AiGenerationException;
+use App\Models\Service;
+use App\Services\Ai\JsonSchema;
+use App\Services\Ai\TextGenerator;
+use App\Services\ServiceCluster\ServiceClusterCoverImageGenerator;
 
 final class ServiceClusterHeroImageGenerator
 {
-    public function __construct(private readonly AiImageGenerator $generator) {}
+    public function __construct(
+        private readonly TextGenerator $textGenerator,
+        private readonly ServiceClusterCoverImageGenerator $coverImageGenerator,
+    ) {}
 
     /**
      * @param  array<int, string>  $benefits
      */
-    public function generate(string $serviceName, string $title, ?string $subtitle, ?string $description, array $benefits): string
+    public function generate(Service $service, string $title, ?string $subtitle, ?string $description, array $benefits): string
     {
-        return $this->generator->generate($this->buildPrompt($serviceName, $title, $subtitle, $description, $benefits), 'hero');
+        $result = $this->textGenerator->generate(
+            [
+                ['role' => 'system', 'content' => $this->systemPrompt()],
+                ['role' => 'user', 'content' => $this->userPrompt($service, $title, $subtitle, $description, $benefits)],
+            ],
+            $this->responseFormat(),
+            0.7,
+        );
+
+        $imagePrompt = $this->parseImagePrompt($result->content);
+
+        return $this->coverImageGenerator->generate($imagePrompt);
+    }
+
+    private function systemPrompt(): string
+    {
+        return <<<'PROMPT'
+            Você é um diretor de arte que escreve prompts de imagem em inglês para um gerador de imagens de IA.
+            Responda estritamente no formato JSON solicitado, sem markdown.
+            PROMPT;
     }
 
     /**
      * @param  array<int, string>  $benefits
      */
-    private function buildPrompt(string $serviceName, string $title, ?string $subtitle, ?string $description, array $benefits): string
+    private function userPrompt(Service $service, string $title, ?string $subtitle, ?string $description, array $benefits): string
     {
-        $parts = [
-            "Hero illustration for \"{$title}\", a specific sub-topic of the B2B technology service \"{$serviceName}\".",
-        ];
+        $lines = [];
+
+        $lines[] = "A OD Tec presta o serviço \"{$service->title}\": {$service->description}";
+        $lines[] = 'Esta é uma página de sub-tópico (cluster temático) desse serviço, com o seguinte conteúdo:';
+        $lines[] = "Título: {$title}";
 
         if (filled($subtitle)) {
-            $parts[] = $subtitle;
+            $lines[] = "Subtítulo: {$subtitle}";
         }
 
         if (filled($description)) {
-            $parts[] = $description;
+            $lines[] = "Descrição: {$description}";
         }
 
         if ($benefits !== []) {
-            $parts[] = 'Key benefits to convey visually: '.implode(', ', $benefits).'.';
+            $lines[] = 'Benefícios: '.implode(', ', $benefits).'.';
         }
 
-        $parts[] = 'Wide hero image with visual breathing room on one side for overlaid text, no embedded text or logos in the image itself.';
+        $lines[] = 'Gere um image_prompt em inglês para uma imagem de capa: cena visual concreta e específica '
+            .'baseada nesse conteúdo, sem texto, letras, logotipos ou marcas d\'água.';
 
-        return implode(' ', $parts);
+        return implode("\n", $lines);
+    }
+
+    private function responseFormat(): JsonSchema
+    {
+        return new JsonSchema(
+            name: 'service_cluster_hero_image',
+            schema: [
+                'type' => 'object',
+                'required' => ['image_prompt'],
+                'properties' => [
+                    'image_prompt' => ['type' => 'string'],
+                ],
+            ],
+        );
+    }
+
+    private function parseImagePrompt(string $jsonPayload): string
+    {
+        $data = json_decode($jsonPayload, associative: true);
+
+        if (! is_array($data) || ! is_string($data['image_prompt'] ?? null) || $data['image_prompt'] === '') {
+            throw AiGenerationException::invalidResponseShape();
+        }
+
+        return $data['image_prompt'];
     }
 }

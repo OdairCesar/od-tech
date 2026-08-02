@@ -70,13 +70,13 @@ class ServiceClusterForm
                             ->icon(Heroicon::OutlinedSparkles)
                             ->disabled(fn (Get $get): bool => blank($get('title')) || blank($get('service_id')))
                             ->action(function (Get $get, Set $set, ServiceClusterHeroImageGenerator $generator): void {
-                                // gpt-image-1 generations routinely take 10-30s; guard against
-                                // hitting a lower default max_execution_time mid-request.
-                                set_time_limit(120);
+                                // this writes the image prompt via a text model before generating
+                                // the image itself, so allow enough headroom for both AI calls.
+                                set_time_limit(180);
 
-                                $serviceName = Service::query()->whereKey($get('service_id'))->value('title');
+                                $service = Service::query()->find($get('service_id'));
 
-                                if (blank($serviceName)) {
+                                if (! $service instanceof Service) {
                                     Notification::make()
                                         ->title('Selecione um serviço primeiro')
                                         ->danger()
@@ -89,7 +89,7 @@ class ServiceClusterForm
 
                                 try {
                                     $path = $generator->generate(
-                                        serviceName: $serviceName,
+                                        service: $service,
                                         title: $get->string('title'),
                                         subtitle: $get->string('subtitle', isNullable: true),
                                         description: $get->string('description', isNullable: true),
