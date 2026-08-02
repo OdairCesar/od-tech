@@ -15,6 +15,7 @@ final class CloudinaryImageUpload
             ->disk('cloudinary')
             ->visibility('public')
             ->maxSize(5120)
+            ->fetchFileInformation(false)
             ->getUploadedFileNameForStorageUsing(
                 fn (TemporaryUploadedFile $file): string => Str::ulid().'-'.str($file->getClientOriginalName())->beforeLast('.'),
             );
