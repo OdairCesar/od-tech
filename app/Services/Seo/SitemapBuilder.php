@@ -11,10 +11,13 @@ use App\Models\Service;
 use App\Models\ServiceCluster;
 use App\Models\ServiceClusterLandingPage;
 use App\Models\State;
+use App\Services\Tools\ToolRegistry;
 use Illuminate\Support\Facades\Cache;
 
 final class SitemapBuilder
 {
+    public function __construct(private readonly ToolRegistry $toolRegistry) {}
+
     /**
      * @return array<int, array{url: string, lastmod: ?string}>
      */
@@ -43,7 +46,12 @@ final class SitemapBuilder
             $this->url(route('blog.index')),
             $this->url(route('faq.index')),
             $this->url(route('portfolio.index')),
+            $this->url(route('tools.index')),
         ];
+
+        foreach ($this->toolRegistry->all() as $tool) {
+            $urls[] = $this->url(route('tools.show', $tool->slug));
+        }
 
         foreach (Service::query()->active()->get() as $service) {
             $urls[] = $this->url(route('services.show', $service), $service->updated_at?->toAtomString());

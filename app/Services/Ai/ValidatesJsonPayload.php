@@ -13,6 +13,20 @@ use App\Exceptions\AiGenerationException;
 trait ValidatesJsonPayload
 {
     /**
+     * @return array<array-key, mixed>
+     */
+    private function decodeJsonObject(string $jsonPayload): array
+    {
+        $data = json_decode($jsonPayload, associative: true);
+
+        if (! is_array($data)) {
+            throw AiGenerationException::invalidResponseShape();
+        }
+
+        return $data;
+    }
+
+    /**
      * @param  array<array-key, mixed>  $data
      */
     private function requireString(array $data, string $key): string

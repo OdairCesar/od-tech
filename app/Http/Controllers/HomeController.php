@@ -6,6 +6,8 @@ use App\Models\Service;
 use App\Models\State;
 use App\Services\Seo\ContentComposer;
 use App\Services\Seo\StructuredDataService;
+use App\Services\Tools\ToolDefinition;
+use App\Services\Tools\ToolRegistry;
 use Illuminate\Contracts\View\View;
 
 class HomeController extends Controller
@@ -16,6 +18,7 @@ class HomeController extends Controller
     public function __construct(
         private readonly ContentComposer $composer,
         private readonly StructuredDataService $structuredData,
+        private readonly ToolRegistry $toolRegistry,
     ) {}
 
     public function index(): View
@@ -37,9 +40,17 @@ class HomeController extends Controller
             ->filter(fn (State $state): bool => $state->cities->isNotEmpty())
             ->values();
 
+        $tools = collect($this->toolRegistry->all())
+            ->map(fn (ToolDefinition $tool): array => [
+                'title' => $tool->title,
+                'tagline' => $tool->tagline,
+                'url' => route('tools.show', $tool->slug),
+            ]);
+
         return view('pages.home', [
             'services' => $services,
             'states' => $states,
+            'tools' => $tools,
             'jsonLd' => [$this->structuredData->organization()],
         ]);
     }

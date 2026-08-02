@@ -4,7 +4,6 @@ use App\Http\Controllers\Blog\BlogIndexController;
 use App\Http\Controllers\Blog\BlogShowController;
 use App\Http\Controllers\Cities\CityIndexController;
 use App\Http\Controllers\Cities\CityShowController;
-use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FaqIndexController;
 use App\Http\Controllers\HomeController;
@@ -19,6 +18,9 @@ use App\Http\Controllers\Services\ServiceShowController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\States\StateIndexController;
 use App\Http\Controllers\States\StateShowController;
+use App\Http\Controllers\Tools\ToolIndexController;
+use App\Http\Controllers\Tools\ToolShowController;
+use App\Http\Controllers\Tools\ToolSubmissionPdfController;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\LandingPage;
@@ -27,6 +29,8 @@ use App\Models\Post;
 use App\Models\Service;
 use App\Models\ServiceCluster;
 use App\Models\State;
+use App\Services\Tools\ToolDefinition;
+use App\Services\Tools\ToolRegistry;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,6 +53,7 @@ Route::bind('state', fn (string $value): State => State::query()->active()->wher
 Route::bind('portfolioItem', fn (string $value): PortfolioItem => PortfolioItem::query()->active()->where('slug', $value)->firstOrFail());
 Route::bind('category', fn (string $value): Category => Category::query()->where('slug', $value)->firstOrFail());
 Route::bind('cluster', fn (string $value): ServiceCluster => ServiceCluster::query()->published()->where('slug', $value)->firstOrFail());
+Route::bind('tool', fn (string $value): ToolDefinition => app(ToolRegistry::class)->find($value) ?? abort(404));
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sobre', [PageController::class, 'about'])->name('about');
@@ -56,7 +61,16 @@ Route::get('/sobre', [PageController::class, 'about'])->name('about');
 Route::get('/contato', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/contato', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 
-Route::get('/consultor-ia', [ConsultationController::class, 'show'])->name('consultation.show');
+Route::get('/ferramentas', [ToolIndexController::class, 'index'])->name('tools.index');
+
+// Formato antigo — mantido só para redirecionar permanentemente para a URL
+// atual (agora dentro de /ferramentas) e não perder indexação de links antigos.
+Route::get('/consultor-ia', fn () => redirect()->route('tools.show', 'consultor-ia', 301));
+
+Route::get('/ferramentas/{tool}', [ToolShowController::class, 'show'])->name('tools.show');
+Route::get('/ferramentas/{tool}/resultado/{submission}/pdf', ToolSubmissionPdfController::class)
+    ->middleware('signed')
+    ->name('tools.submission.pdf');
 
 Route::get('/servicos', [ServiceIndexController::class, 'index'])->name('services.index');
 Route::get('/servicos/{service}', [ServiceShowController::class, 'show'])->name('services.show');

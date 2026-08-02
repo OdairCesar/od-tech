@@ -32,6 +32,8 @@
 
     <x-section.services-grid id="servicos" eyebrow="Serviços" title="Soluções completas para levar sua empresa ao digital" :items="$services" />
 
+    <x-section.tools id="ferramentas" eyebrow="Ferramentas gratuitas" title="Tem uma pergunta sobre o seu projeto? A IA responde agora" description="Converse com a nossa IA e receba, na hora, números e um plano inicial para a sua ideia — sem compromisso." :items="$tools" />
+
     <x-section.process id="processo" eyebrow="Como trabalhamos" title="Um processo simples, do briefing ao lançamento" :steps="[
         ['n' => '01', 'title' => 'Descoberta', 'desc' => 'Entendemos seu negócio, objetivos e o problema a resolver.'],
         ['n' => '02', 'title' => 'Design & Arquitetura', 'desc' => 'Planejamos a solução técnica e a experiência do usuário.'],

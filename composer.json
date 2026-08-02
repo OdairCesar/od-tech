@@ -9,6 +9,7 @@
         "php": "^8.4",
         "ext-intl": "*",
         "ext-zip": "*",
+        "barryvdh/laravel-dompdf": "^3.1",
         "cloudinary/cloudinary_php": "^3.1",
         "codebar-ag/laravel-flysystem-cloudinary": "^13.0",
         "filament/filament": "^4.0",

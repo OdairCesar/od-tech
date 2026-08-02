@@ -3,9 +3,7 @@
         ['label' => 'Sobre', 'url' => route('about')],
         ['label' => 'Serviços', 'url' => route('services.index')],
         ['label' => 'Processo', 'url' => route('home').'#processo'],
-        ['label' => 'Trabalhos', 'url' => route('home').'#trabalhos'],
         ['label' => 'Blog', 'url' => route('blog.index')],
-        ['label' => 'Consultor de IA', 'url' => route('consultation.show')],
     ];
 @endphp
 

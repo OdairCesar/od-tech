@@ -12,6 +12,9 @@ export default defineConfig({
                 bunny('Inter', {
                     weights: [400, 500, 600, 700, 800],
                 }),
+                bunny('JetBrains Mono', {
+                    weights: [400, 500, 700],
+                }),
             ],
         }),
         tailwindcss(),

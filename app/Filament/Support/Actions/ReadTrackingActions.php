@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Shared "read_at" tracking actions for the two inbox-style resources
- * (Lead and Consultation), which only differ in the model they operate on.
+ * Shared "read_at" tracking actions for the inbox-style resources
+ * (Lead and ToolSubmission), which only differ in the model they operate on.
  */
 final class ReadTrackingActions
 {
