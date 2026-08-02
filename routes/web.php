@@ -21,39 +21,14 @@ use App\Http\Controllers\States\StateShowController;
 use App\Http\Controllers\Tools\ToolIndexController;
 use App\Http\Controllers\Tools\ToolShowController;
 use App\Http\Controllers\Tools\ToolSubmissionPdfController;
-use App\Models\Category;
 use App\Models\City;
-use App\Models\LandingPage;
-use App\Models\PortfolioItem;
-use App\Models\Post;
 use App\Models\Service;
 use App\Models\ServiceCluster;
-use App\Models\State;
-use App\Services\Tools\ToolDefinition;
-use App\Services\Tools\ToolRegistry;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Route model bindings (public site)
-|--------------------------------------------------------------------------
-|
-| Scoped to the "published"/"active" state so draft records 404 on the
-| public site. These bindings only apply to routes using the matching
-| {service}/{city}/{landingPage} parameter names below — the Filament
-| admin panel resolves its own {record} bindings independently and is
-| unaffected.
-*/
-
-Route::bind('service', fn (string $value): Service => Service::query()->active()->where('slug', $value)->firstOrFail());
-Route::bind('city', fn (string $value): City => City::query()->active()->where('slug', $value)->firstOrFail());
-Route::bind('landingPage', fn (string $value): LandingPage => LandingPage::query()->published()->where('slug', $value)->firstOrFail());
-Route::bind('post', fn (string $value): Post => Post::query()->published()->where('slug', $value)->firstOrFail());
-Route::bind('state', fn (string $value): State => State::query()->active()->where('slug', $value)->firstOrFail());
-Route::bind('portfolioItem', fn (string $value): PortfolioItem => PortfolioItem::query()->active()->where('slug', $value)->firstOrFail());
-Route::bind('category', fn (string $value): Category => Category::query()->where('slug', $value)->firstOrFail());
-Route::bind('cluster', fn (string $value): ServiceCluster => ServiceCluster::query()->published()->where('slug', $value)->firstOrFail());
-Route::bind('tool', fn (string $value): ToolDefinition => app(ToolRegistry::class)->find($value) ?? abort(404));
+// Route model bindings (service/city/landingPage/post/state/portfolioItem/category/cluster/tool)
+// are registered in App\Providers\AppServiceProvider::boot() instead of here — see that
+// method's docblock for why they can't live in this file.
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sobre', [PageController::class, 'about'])->name('about');
