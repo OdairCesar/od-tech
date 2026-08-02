@@ -20,7 +20,7 @@ class EditServiceClusterLandingPage extends EditRecord
     {
         return [
             Action::make('view')
-                ->label('Ver no site')
+                ->label('Ver site')
                 ->icon('heroicon-o-arrow-top-right-on-square')
                 ->visible(fn (): bool => Route::has('services.clusters.show'))
                 ->url(fn (): string => route('services.clusters.show', [

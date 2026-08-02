@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LandingPages;
 
+use App\Enums\NavigationGroup;
 use App\Filament\Resources\LandingPages\Pages\CreateLandingPage;
 use App\Filament\Resources\LandingPages\Pages\EditLandingPage;
 use App\Filament\Resources\LandingPages\Pages\ListLandingPages;
@@ -13,12 +14,17 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class LandingPageResource extends Resource
 {
     protected static ?string $model = LandingPage::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGlobeAlt;
+
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Paginas;
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $modelLabel = 'landing page';
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PortfolioItems;
 
+use App\Enums\NavigationGroup;
 use App\Filament\Resources\PortfolioItems\Pages\CreatePortfolioItem;
 use App\Filament\Resources\PortfolioItems\Pages\EditPortfolioItem;
 use App\Filament\Resources\PortfolioItems\Pages\ListPortfolioItems;
@@ -13,12 +14,17 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class PortfolioItemResource extends Resource
 {
     protected static ?string $model = PortfolioItem::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBriefcase;
+
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Paginas;
+
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $modelLabel = 'projeto do portfólio';
 

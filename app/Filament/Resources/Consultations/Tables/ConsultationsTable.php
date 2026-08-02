@@ -3,8 +3,9 @@
 namespace App\Filament\Resources\Consultations\Tables;
 
 use App\Enums\ConsultationStatus;
+use App\Filament\Support\Actions\ReadTrackingActions;
+use App\Filament\Support\Tables\DateRangeFilter;
 use App\Models\Consultation;
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -61,17 +62,15 @@ class ConsultationsTable
                         true: fn (Builder $query): Builder => $query->whereNotNull('read_at'),
                         false: fn (Builder $query): Builder => $query->whereNull('read_at'),
                     ),
+                DateRangeFilter::make('created_at', 'Recebido em'),
             ])
             ->recordActions([
-                Action::make('markAsRead')
-                    ->label('Marcar como lido')
-                    ->icon('heroicon-o-check')
-                    ->visible(fn (Consultation $record): bool => $record->read_at === null)
-                    ->action(fn (Consultation $record) => $record->update(['read_at' => now()])),
+                ReadTrackingActions::markAsReadAction(),
                 EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    ...ReadTrackingActions::bulkActions(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

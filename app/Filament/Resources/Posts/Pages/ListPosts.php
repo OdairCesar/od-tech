@@ -16,7 +16,7 @@ class ListPosts extends ListRecords
     {
         return [
             Action::make('generateWithAi')
-                ->label('Gerar post com IA')
+                ->label('Gerar post')
                 ->icon(Heroicon::OutlinedSparkles)
                 ->url(fn (): string => PostResource::getUrl('generate')),
             CreateAction::make(),

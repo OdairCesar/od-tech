@@ -40,12 +40,14 @@ class ServiceClusterLandingPagesTable
                         $record->slug,
                     ]),
                     visible: fn (): bool => Route::has('services.clusters.show'),
-                    label: 'Ver no site',
+                    label: 'Ver site',
                 ),
+                LandingPageTableColumns::toggleStatusAction(),
                 EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    ...LandingPageTableColumns::bulkStatusActions(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

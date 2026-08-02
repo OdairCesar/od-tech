@@ -16,7 +16,7 @@ class ListServiceClusters extends ListRecords
     {
         return [
             Action::make('generateWithAi')
-                ->label('Gerar cluster com IA')
+                ->label('Gerar cluster')
                 ->icon(Heroicon::OutlinedSparkles)
                 ->url(fn (): string => ServiceClusterResource::getUrl('generate')),
             CreateAction::make(),

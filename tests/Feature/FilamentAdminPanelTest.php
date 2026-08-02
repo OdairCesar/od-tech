@@ -1,7 +1,10 @@
 <?php
 
 use App\Enums\PageStatus;
+use App\Filament\Resources\Cities\Pages\ListCities;
 use App\Filament\Resources\LandingPages\Pages\ListLandingPages;
+use App\Filament\Resources\Leads\Pages\ListLeads;
+use App\Filament\Resources\PortfolioItems\Pages\ListPortfolioItems;
 use App\Filament\Resources\Services\Pages\CreateService;
 use App\Filament\Resources\Services\Pages\EditService;
 use App\Filament\Resources\Services\Pages\ListServices;
@@ -9,6 +12,7 @@ use App\Jobs\RegenerateLandingPages;
 use App\Models\City;
 use App\Models\LandingPage;
 use App\Models\Lead;
+use App\Models\PortfolioItem;
 use App\Models\Service;
 use App\Models\User;
 use Filament\Actions\Testing\TestAction;
@@ -122,24 +126,91 @@ test('the generate hero image action is disabled until a title is filled in', fu
         ->assertActionEnabled(TestAction::make('generateHeroImage')->schemaComponent('hero_image'));
 });
 
-test('the services table view action only shows for published services', function () {
+test('the services table view on site action only shows for published services', function () {
     $published = Service::factory()->create(['status' => PageStatus::Published]);
     $draft = Service::factory()->create(['status' => PageStatus::Draft]);
 
     Livewire::test(ListServices::class)
-        ->assertTableActionVisible('view', $published)
-        ->assertTableActionHidden('view', $draft);
+        ->assertTableActionVisible('viewOnSite', $published)
+        ->assertTableActionHidden('viewOnSite', $draft);
 });
 
-test('the edit service page view action only shows for published services', function () {
+test('the services table generate image action fills the hero_image field with an ai generated image', function () {
+    Storage::fake('cloudinary');
+
+    OpenAI::fake([
+        ImageCreateResponse::fake([
+            'data' => [['b64_json' => base64_encode('fake-image-bytes')]],
+        ]),
+    ]);
+
+    $service = Service::factory()->create(['title' => 'Criação de Sites', 'hero_image' => null]);
+
+    Livewire::test(ListServices::class)
+        ->callTableAction('generateImage', $service)
+        ->assertNotified();
+
+    $service->refresh();
+
+    expect($service->hero_image)->not->toBeNull();
+    Storage::disk('cloudinary')->assertExists($service->hero_image);
+});
+
+test('the generate image action is hidden once a service already has a hero image', function () {
+    $service = Service::factory()->create(['hero_image' => 'services/example-hero']);
+
+    Livewire::test(ListServices::class)
+        ->assertTableActionHidden('generateImage', $service);
+});
+
+test('the portfolio items table generate image action fills the cover_image field with an ai generated image', function () {
+    Storage::fake('cloudinary');
+
+    OpenAI::fake([
+        ImageCreateResponse::fake([
+            'data' => [['b64_json' => base64_encode('fake-image-bytes')]],
+        ]),
+    ]);
+
+    $portfolioItem = PortfolioItem::factory()->create(['title' => 'Plataforma de agendamento', 'cover_image' => null]);
+
+    Livewire::test(ListPortfolioItems::class)
+        ->callTableAction('generateImage', $portfolioItem)
+        ->assertNotified();
+
+    $portfolioItem->refresh();
+
+    expect($portfolioItem->cover_image)->not->toBeNull();
+    Storage::disk('cloudinary')->assertExists($portfolioItem->cover_image);
+});
+
+test('the portfolio items generate image action is hidden once a cover image already exists', function () {
+    $portfolioItem = PortfolioItem::factory()->create(['cover_image' => 'portfolio/example-cover']);
+
+    Livewire::test(ListPortfolioItems::class)
+        ->assertTableActionHidden('generateImage', $portfolioItem);
+});
+
+test('clicking a service table row always opens the edit page, not the site', function () {
+    $published = Service::factory()->create(['status' => PageStatus::Published]);
+
+    $recordUrl = Livewire::test(ListServices::class)
+        ->instance()
+        ->getTable()
+        ->getRecordUrl($published);
+
+    expect($recordUrl)->toBe(EditService::getUrl(['record' => $published]));
+});
+
+test('the edit service page view on site action only shows for published services', function () {
     $published = Service::factory()->create(['status' => PageStatus::Published]);
     $draft = Service::factory()->create(['status' => PageStatus::Draft]);
 
     Livewire::test(EditService::class, ['record' => $published->getRouteKey()])
-        ->assertActionVisible('view');
+        ->assertActionVisible('viewOnSite');
 
     Livewire::test(EditService::class, ['record' => $draft->getRouteKey()])
-        ->assertActionHidden('view');
+        ->assertActionHidden('viewOnSite');
 });
 
 test('the regenerate all action dispatches the regeneration job and notifies the admin', function () {
@@ -162,4 +233,68 @@ test('the regenerate all action does not dispatch another job while one is alrea
         ->assertNotified();
 
     Bus::assertNotDispatched(RegenerateLandingPages::class);
+});
+
+test('the toggle publish status action publishes and unpublishes a service', function () {
+    $service = Service::factory()->create(['status' => PageStatus::Draft]);
+
+    Livewire::test(ListServices::class)
+        ->callTableAction('togglePublishStatus', $service);
+
+    expect($service->refresh()->status)->toBe(PageStatus::Published);
+
+    Livewire::test(ListServices::class)
+        ->callTableAction('togglePublishStatus', $service);
+
+    expect($service->refresh()->status)->toBe(PageStatus::Draft);
+});
+
+test('services can be bulk published and unpublished', function () {
+    $services = Service::factory()->count(2)->create(['status' => PageStatus::Draft]);
+
+    Livewire::test(ListServices::class)
+        ->callTableBulkAction('publish', $services);
+
+    expect($services->fresh()->pluck('status')->all())->toBe([PageStatus::Published, PageStatus::Published]);
+
+    Livewire::test(ListServices::class)
+        ->callTableBulkAction('unpublish', $services);
+
+    expect($services->fresh()->pluck('status')->all())->toBe([PageStatus::Draft, PageStatus::Draft]);
+});
+
+test('the cities list can be filtered by region', function () {
+    $capital = City::factory()->create(['region' => 'Grande São Paulo']);
+    $interior = City::factory()->create(['region' => 'Interior de São Paulo']);
+
+    Livewire::test(ListCities::class)
+        ->assertCanSeeTableRecords([$capital, $interior])
+        ->filterTable('region', 'Grande São Paulo')
+        ->assertCanSeeTableRecords([$capital])
+        ->assertCanNotSeeTableRecords([$interior]);
+});
+
+test('leads can be bulk marked as read and unread', function () {
+    $leads = Lead::factory()->count(2)->create(['read_at' => null]);
+
+    Livewire::test(ListLeads::class)
+        ->callTableBulkAction('markAsRead', $leads);
+
+    expect($leads->fresh()->pluck('read_at')->filter()->count())->toBe(2);
+
+    Livewire::test(ListLeads::class)
+        ->callTableBulkAction('markAsUnread', $leads);
+
+    expect($leads->fresh()->pluck('read_at')->filter()->count())->toBe(0);
+});
+
+test('the leads list can be filtered by the date received', function () {
+    $old = Lead::factory()->create(['created_at' => now()->subDays(10)]);
+    $recent = Lead::factory()->create(['created_at' => now()]);
+
+    Livewire::test(ListLeads::class)
+        ->assertCanSeeTableRecords([$old, $recent])
+        ->filterTable('created_at', ['from' => now()->subDay()->toDateString()])
+        ->assertCanSeeTableRecords([$recent])
+        ->assertCanNotSeeTableRecords([$old]);
 });

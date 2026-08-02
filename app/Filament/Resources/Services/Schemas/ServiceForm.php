@@ -56,7 +56,7 @@ class ServiceForm
                     ->label('Imagem do hero')
                     ->belowContent(
                         Action::make('generateHeroImage')
-                            ->label('Gerar imagem com IA')
+                            ->label('Gerar imagem')
                             ->icon(Heroicon::OutlinedSparkles)
                             ->disabled(fn (Get $get): bool => blank($get('title')))
                             ->action(function (Get $get, Set $set, ServiceHeroImageGenerator $generator): void {

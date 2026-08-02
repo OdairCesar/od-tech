@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ServiceClusterLandingPages;
 
+use App\Enums\NavigationGroup;
 use App\Filament\Resources\ServiceClusterLandingPages\Pages\CreateServiceClusterLandingPage;
 use App\Filament\Resources\ServiceClusterLandingPages\Pages\EditServiceClusterLandingPage;
 use App\Filament\Resources\ServiceClusterLandingPages\Pages\ListServiceClusterLandingPages;
@@ -13,12 +14,17 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class ServiceClusterLandingPageResource extends Resource
 {
     protected static ?string $model = ServiceClusterLandingPage::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
+
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Paginas;
+
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $modelLabel = 'cluster por cidade';
 

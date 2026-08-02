@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Posts\Tables;
 
 use App\Enums\PostStatus;
+use App\Filament\Support\Actions\BulkPublishStatusActions;
+use App\Filament\Support\Actions\TogglePublishStatusAction;
 use App\Filament\Support\Actions\ViewOnLandingAction;
 use App\Models\Post;
 use Filament\Actions\BulkActionGroup;
@@ -20,32 +22,44 @@ class PostsTable
         return $table
             ->columns([
                 TextColumn::make('title')
+                    ->label('Título')
                     ->searchable()
                     ->placeholder('Gerando com IA...'),
                 TextColumn::make('category.name')
                     ->label('Categoria')
                     ->badge(),
                 ImageColumn::make('cover_image')
+                    ->label('Imagem')
                     ->disk('cloudinary')
                     ->checkFileExistence(false),
                 TextColumn::make('author.name')
                     ->label('Autor')
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('status')
+                    ->label('Status')
                     ->badge(),
                 TextColumn::make('published_at')
+                    ->label('Publicado em')
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label('Criado em')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('status')
+                    ->label('Status')
                     ->options(PostStatus::class),
                 SelectFilter::make('category')
-                    ->relationship('category', 'name'),
+                    ->label('Categoria')
+                    ->relationship('category', 'name')
+                    ->searchable(),
+                SelectFilter::make('author')
+                    ->label('Autor')
+                    ->relationship('author', 'name')
+                    ->searchable(),
             ])
             ->recordActions([
                 ViewOnLandingAction::make(
@@ -53,10 +67,12 @@ class PostsTable
                     visible: fn (Post $record): bool => $record->status === PostStatus::Published,
                     label: 'Ver post',
                 ),
+                TogglePublishStatusAction::make(PostStatus::class),
                 EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    ...BulkPublishStatusActions::make(PostStatus::class),
                     DeleteBulkAction::make(),
                 ]),
             ]);

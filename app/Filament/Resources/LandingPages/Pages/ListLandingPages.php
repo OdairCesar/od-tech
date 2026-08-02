@@ -19,13 +19,13 @@ class ListLandingPages extends ListRecords
     {
         return [
             Action::make('regenerateAll')
-                ->label('Regenerar todas as landing pages')
+                ->label('Regenerar tudo')
                 ->icon(Heroicon::OutlinedArrowPath)
                 ->color('danger')
                 ->requiresConfirmation()
                 ->modalHeading('Regenerar todas as landing pages')
                 ->modalDescription('Isso vai apagar todas as landing pages existentes, incluindo H1, meta title/description, canonical, robots e CTA customizados manualmente, e recriar uma nova para cada combinação de serviço e cidade com os valores padrão. A ação roda em segundo plano.')
-                ->modalSubmitActionLabel('Sim, apagar e regenerar')
+                ->modalSubmitActionLabel('Sim, regenerar')
                 ->action(function (): void {
                     if (! Cache::add(RegenerateLandingPages::LOCK_KEY, true, now()->addMinutes(30))) {
                         Notification::make()

@@ -1,7 +1,9 @@
 <?php
 
+use App\Filament\Resources\Consultations\Pages\ListConsultations;
 use App\Models\Consultation;
 use App\Models\User;
+use Livewire\Livewire;
 
 test('admin can view, edit and delete consultations', function () {
     $admin = User::factory()->admin()->create();
@@ -58,4 +60,20 @@ test('nobody can create consultations through the admin, including admins', func
     $this->actingAs($admin);
 
     $this->get('/admin/consultations/create')->assertNotFound();
+});
+
+test('consultations can be bulk marked as read and unread', function () {
+    $this->actingAs(User::factory()->admin()->create());
+
+    $consultations = Consultation::factory()->count(2)->create(['read_at' => null]);
+
+    Livewire::test(ListConsultations::class)
+        ->callTableBulkAction('markAsRead', $consultations);
+
+    expect($consultations->fresh()->pluck('read_at')->filter()->count())->toBe(2);
+
+    Livewire::test(ListConsultations::class)
+        ->callTableBulkAction('markAsUnread', $consultations);
+
+    expect($consultations->fresh()->pluck('read_at')->filter()->count())->toBe(0);
 });

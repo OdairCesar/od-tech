@@ -36,12 +36,14 @@ class LandingPagesTable
                 ViewOnLandingAction::make(
                     url: fn ($record) => route('landing.show', $record),
                     visible: fn (): bool => Route::has('landing.show'),
-                    label: 'Ver no site',
+                    label: 'Ver site',
                 ),
+                LandingPageTableColumns::toggleStatusAction(),
                 EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    ...LandingPageTableColumns::bulkStatusActions(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

@@ -2,8 +2,9 @@
 
 namespace App\Filament\Resources\Leads\Tables;
 
+use App\Filament\Support\Actions\ReadTrackingActions;
+use App\Filament\Support\Tables\DateRangeFilter;
 use App\Models\Lead;
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -55,17 +56,15 @@ class LeadsTable
                         true: fn (Builder $query): Builder => $query->whereNotNull('read_at'),
                         false: fn (Builder $query): Builder => $query->whereNull('read_at'),
                     ),
+                DateRangeFilter::make('created_at', 'Recebido em'),
             ])
             ->recordActions([
-                Action::make('markAsRead')
-                    ->label('Marcar como lido')
-                    ->icon('heroicon-o-check')
-                    ->visible(fn (Lead $record): bool => $record->read_at === null)
-                    ->action(fn (Lead $record) => $record->update(['read_at' => now()])),
+                ReadTrackingActions::markAsReadAction(),
                 EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    ...ReadTrackingActions::bulkActions(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

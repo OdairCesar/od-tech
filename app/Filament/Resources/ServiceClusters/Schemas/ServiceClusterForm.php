@@ -66,7 +66,7 @@ class ServiceClusterForm
                     ->helperText('Deixe em branco para usar a imagem do serviço pai.')
                     ->belowContent(
                         Action::make('generateHeroImage')
-                            ->label('Gerar imagem com IA')
+                            ->label('Gerar imagem')
                             ->icon(Heroicon::OutlinedSparkles)
                             ->disabled(fn (Get $get): bool => blank($get('title')) || blank($get('service_id')))
                             ->action(function (Get $get, Set $set, ServiceClusterHeroImageGenerator $generator): void {

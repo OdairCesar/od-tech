@@ -42,7 +42,7 @@ class PortfolioItemForm
                     ->live(onBlur: true)
                     ->belowContent(
                         Action::make('generatePortfolioCopy')
-                            ->label('Gerar texto com IA')
+                            ->label('Gerar texto')
                             ->icon(Heroicon::OutlinedSparkles)
                             ->disabled(fn (Get $get): bool => blank($get('external_url')))
                             ->action(function (Get $get, Set $set, PortfolioCopyGenerator $generator): void {
@@ -80,7 +80,7 @@ class PortfolioItemForm
                     ->label('Imagem de capa')
                     ->belowContent(
                         Action::make('generatePortfolioCoverImage')
-                            ->label('Gerar imagem com IA')
+                            ->label('Gerar imagem')
                             ->icon(Heroicon::OutlinedSparkles)
                             ->disabled(fn (Get $get): bool => blank($get('title')))
                             ->action(function (Get $get, Set $set, PortfolioCoverImageGenerator $generator): void {

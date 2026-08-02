@@ -7,7 +7,9 @@ use App\Enums\PostLength;
 use App\Enums\PostStatus;
 use App\Enums\WritingTone;
 use App\Filament\Resources\Categories\Pages\CreateCategory;
+use App\Filament\Resources\Categories\Pages\ListCategories;
 use App\Filament\Resources\Posts\Pages\GenerateAiPost;
+use App\Filament\Resources\Posts\Pages\ListPosts;
 use App\Jobs\GenerateAiBlogPost;
 use App\Models\AiBriefSuggestion;
 use App\Models\Category;
@@ -112,4 +114,48 @@ test('submitting the ai briefing form remembers new secondary keywords as future
 
     expect(AiBriefSuggestion::query()->forField('secondary_keywords')->orderBy('value')->pluck('value')->all())
         ->toBe(['sistema de gestão médica', 'software para clínicas']);
+});
+
+test('the posts list can be filtered by author', function () {
+    $author = User::factory()->admin()->create();
+    $otherAuthor = User::factory()->admin()->create();
+
+    $ownPost = Post::factory()->create(['user_id' => $author->id]);
+    $otherPost = Post::factory()->create(['user_id' => $otherAuthor->id]);
+
+    Livewire::test(ListPosts::class)
+        ->assertCanSeeTableRecords([$ownPost, $otherPost])
+        ->filterTable('author', $author->id)
+        ->assertCanSeeTableRecords([$ownPost])
+        ->assertCanNotSeeTableRecords([$otherPost]);
+});
+
+test('the toggle publish status action is hidden for a post that is still generating', function () {
+    $generating = Post::factory()->create(['status' => PostStatus::Generating]);
+    $draft = Post::factory()->create(['status' => PostStatus::Draft]);
+
+    Livewire::test(ListPosts::class)
+        ->assertTableActionHidden('togglePublishStatus', $generating)
+        ->assertTableActionVisible('togglePublishStatus', $draft);
+});
+
+test('the toggle publish status action publishes a draft post', function () {
+    $post = Post::factory()->create(['status' => PostStatus::Draft]);
+
+    Livewire::test(ListPosts::class)
+        ->callTableAction('togglePublishStatus', $post);
+
+    expect($post->refresh()->status)->toBe(PostStatus::Published);
+});
+
+test('the categories list can be filtered by whether they have posts', function () {
+    $withPosts = Category::factory()->create();
+    Post::factory()->create(['category_id' => $withPosts->id]);
+    $withoutPosts = Category::factory()->create();
+
+    Livewire::test(ListCategories::class)
+        ->assertCanSeeTableRecords([$withPosts, $withoutPosts])
+        ->filterTable('has_posts', true)
+        ->assertCanSeeTableRecords([$withPosts])
+        ->assertCanNotSeeTableRecords([$withoutPosts]);
 });
