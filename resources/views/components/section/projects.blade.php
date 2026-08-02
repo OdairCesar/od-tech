@@ -12,7 +12,17 @@
 
         <div class="grid gap-6 min-[640px]:grid-cols-2 min-[960px]:grid-cols-3">
             @foreach ($items as $index => $item)
-                <div data-reveal style="transition-delay: {{ $index * 120 }}ms">
+                @php $tag = empty($item['url']) ? 'div' : 'a'; @endphp
+                <{{ $tag }}
+                    @if (! empty($item['url']))
+                        href="{{ $item['url'] }}"
+                        data-ga-event="project_click"
+                        data-ga-payload="{{ json_encode(['title' => $item['title']]) }}"
+                    @endif
+                    data-reveal
+                    style="transition-delay: {{ $index * 120 }}ms"
+                    class="group block"
+                >
                     @if (! empty($item['image']))
                         <img src="{{ asset($item['image']) }}" alt="{{ $item['title'] }}" loading="lazy" decoding="async" class="mb-4 h-[220px] w-full rounded-2xl object-cover" />
                     @else
@@ -20,15 +30,9 @@
                             {{ $item['title'] }}
                         </div>
                     @endif
-                    <h4 class="mb-1.5 text-[17px] font-bold">
-                        @if (! empty($item['url']))
-                            <a href="{{ $item['url'] }}" class="hover:text-blue-600" data-ga-event="project_click" data-ga-payload="{{ json_encode(['title' => $item['title']]) }}">{{ $item['title'] }}</a>
-                        @else
-                            {{ $item['title'] }}
-                        @endif
-                    </h4>
+                    <h4 class="mb-1.5 text-[17px] font-bold group-hover:text-blue-600">{{ $item['title'] }}</h4>
                     <p class="text-sm text-slate-500">{{ $item['desc'] }}</p>
-                </div>
+                </{{ $tag }}>
             @endforeach
         </div>
     </div>

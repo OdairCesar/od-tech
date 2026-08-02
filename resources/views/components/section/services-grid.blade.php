@@ -13,16 +13,10 @@
 
         <div class="grid gap-6 min-[640px]:grid-cols-2 min-[960px]:grid-cols-3">
             @foreach ($items as $index => $item)
-                <x-ui.card :delay="($index * 60).'ms'">
+                <x-ui.card :delay="($index * 60).'ms'" :href="$item['url'] ?? null">
                     <x-ui.icon-badge :icon="$item['icon']" :bg="$item['bg'] ?? 'bg-slate-800'" />
 
-                    <h3 class="text-lg font-bold">
-                        @if (! empty($item['url']))
-                            <a href="{{ $item['url'] }}" class="hover:text-blue-600">{{ $item['title'] }}</a>
-                        @else
-                            {{ $item['title'] }}
-                        @endif
-                    </h3>
+                    <h3 class="text-lg font-bold group-hover:text-blue-600">{{ $item['title'] }}</h3>
 
                     <p class="text-[15px] leading-relaxed text-slate-500">{{ $item['desc'] }}</p>
                 </x-ui.card>
