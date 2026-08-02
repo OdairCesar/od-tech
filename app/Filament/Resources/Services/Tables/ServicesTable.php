@@ -27,7 +27,8 @@ class ServicesTable
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 ImageColumn::make('hero_image')
-                    ->disk('cloudinary'),
+                    ->disk('cloudinary')
+                    ->checkFileExistence(false),
                 TextColumn::make('landing_pages_count')
                     ->label('Landing pages')
                     ->counts('landingPages'),

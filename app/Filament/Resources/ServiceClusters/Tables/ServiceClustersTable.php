@@ -28,7 +28,8 @@ class ServiceClustersTable
                     ->searchable()
                     ->placeholder('Gerando com IA...'),
                 ImageColumn::make('hero_image')
-                    ->disk('cloudinary'),
+                    ->disk('cloudinary')
+                    ->checkFileExistence(false),
                 TextColumn::make('landing_pages_count')
                     ->label('Cidades')
                     ->counts('landingPages'),

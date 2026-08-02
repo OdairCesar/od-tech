@@ -26,7 +26,8 @@ class PostsTable
                     ->label('Categoria')
                     ->badge(),
                 ImageColumn::make('cover_image')
-                    ->disk('cloudinary'),
+                    ->disk('cloudinary')
+                    ->checkFileExistence(false),
                 TextColumn::make('author.name')
                     ->label('Autor')
                     ->toggleable(isToggledHiddenByDefault: true),
