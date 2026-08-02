@@ -4,6 +4,7 @@
     'newTab' => false,
     'gaEvent' => null,
     'gaPayload' => null,
+    'modal' => false,
 ])
 
 @php
@@ -19,5 +20,6 @@
     @if ($newTab) target="_blank" rel="noopener noreferrer" @endif
     @if ($gaEvent) data-ga-event="{{ $gaEvent }}" @endif
     @if ($gaPayload) data-ga-payload="{{ json_encode($gaPayload) }}" @endif
+    @if ($modal) @click.prevent="chatOpen = true" @endif
     {{ $attributes->class(['inline-block rounded-full px-8 py-4 text-base font-bold text-center', $variants[$variant] ?? $variants['primary']]) }}
 >{{ $slot }}</a>
