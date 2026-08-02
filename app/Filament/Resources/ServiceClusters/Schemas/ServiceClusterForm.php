@@ -4,15 +4,23 @@ namespace App\Filament\Resources\ServiceClusters\Schemas;
 
 use App\Enums\ServiceClusterStatus;
 use App\Filament\Support\Forms\CloudinaryImageUpload;
+use App\Models\Service;
 use App\Models\ServiceCluster;
+use App\Services\Landing\ServiceClusterHeroImageGenerator;
+use Filament\Actions\Action;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Throwable;
 
 class ServiceClusterForm
 {
@@ -55,7 +63,60 @@ class ServiceClusterForm
                     ->columnSpanFull(),
                 CloudinaryImageUpload::make('hero_image')
                     ->label('Imagem do hero')
-                    ->helperText('Deixe em branco para usar a imagem do serviço pai.'),
+                    ->helperText('Deixe em branco para usar a imagem do serviço pai.')
+                    ->belowContent(
+                        Action::make('generateHeroImage')
+                            ->label('Gerar imagem com IA')
+                            ->icon(Heroicon::OutlinedSparkles)
+                            ->disabled(fn (Get $get): bool => blank($get('title')) || blank($get('service_id')))
+                            ->action(function (Get $get, Set $set, ServiceClusterHeroImageGenerator $generator): void {
+                                // gpt-image-1 generations routinely take 10-30s; guard against
+                                // hitting a lower default max_execution_time mid-request.
+                                set_time_limit(120);
+
+                                $serviceName = Service::query()->whereKey($get('service_id'))->value('title');
+
+                                if (blank($serviceName)) {
+                                    Notification::make()
+                                        ->title('Selecione um serviço primeiro')
+                                        ->danger()
+                                        ->send();
+
+                                    return;
+                                }
+
+                                $benefits = $get('benefits');
+
+                                try {
+                                    $path = $generator->generate(
+                                        serviceName: $serviceName,
+                                        title: $get->string('title'),
+                                        subtitle: $get->string('subtitle', isNullable: true),
+                                        description: $get->string('description', isNullable: true),
+                                        benefits: is_array($benefits)
+                                            ? array_values(array_filter($benefits, fn (mixed $value): bool => is_string($value)))
+                                            : [],
+                                    );
+                                } catch (Throwable $exception) {
+                                    report($exception);
+
+                                    Notification::make()
+                                        ->title('Não foi possível gerar a imagem')
+                                        ->body('Tente novamente em instantes.')
+                                        ->danger()
+                                        ->send();
+
+                                    return;
+                                }
+
+                                $set('hero_image', $path);
+
+                                Notification::make()
+                                    ->title('Imagem gerada com sucesso')
+                                    ->success()
+                                    ->send();
+                            }),
+                    ),
                 Select::make('status')
                     ->options(ServiceClusterStatus::class)
                     ->default(ServiceClusterStatus::Draft)

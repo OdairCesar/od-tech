@@ -11,6 +11,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class ServiceClustersTable
@@ -46,6 +47,12 @@ class ServiceClustersTable
                     ->searchable(),
                 SelectFilter::make('status')
                     ->options(ServiceClusterStatus::class),
+                TernaryFilter::make('hero_image')
+                    ->label('Imagem')
+                    ->nullable()
+                    ->placeholder('Todos')
+                    ->trueLabel('Com imagem')
+                    ->falseLabel('Sem imagem'),
             ])
             ->recordActions([
                 ViewOnLandingAction::make(
