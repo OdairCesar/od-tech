@@ -3,9 +3,12 @@
 namespace App\Services\Consultation;
 
 use App\Exceptions\AiGenerationException;
+use App\Services\Ai\ValidatesJsonPayload;
 
 final class ConsultationReportParser
 {
+    use ValidatesJsonPayload;
+
     public function parse(string $jsonPayload): GeneratedConsultationReport
     {
         $data = json_decode($jsonPayload, associative: true);
@@ -32,24 +35,9 @@ final class ConsultationReportParser
             nextPhases: $this->requireStringArray($data, 'next_phases'),
             estimateTimeframe: $this->requireString($data, 'estimate_timeframe'),
             estimateInvestment: $this->requireString($data, 'estimate_investment'),
-            deliveryStages: $this->requireDeliveryStages($data),
+            deliveryStages: array_values(array_map($this->requireDeliveryStage(...), $this->requireArray($data, 'delivery_stages'))),
             openQuestions: $this->requireStringArray($data, 'open_questions'),
         );
-    }
-
-    /**
-     * @param  array<array-key, mixed>  $data
-     * @return array<int, array{name: string, description: string, timeframe: string, investment: string}>
-     */
-    private function requireDeliveryStages(array $data): array
-    {
-        $value = $data['delivery_stages'] ?? null;
-
-        if (! is_array($value)) {
-            throw AiGenerationException::invalidResponseShape();
-        }
-
-        return array_values(array_map($this->requireDeliveryStage(...), $value));
     }
 
     /**
@@ -67,43 +55,5 @@ final class ConsultationReportParser
             'timeframe' => $this->requireString($stage, 'timeframe'),
             'investment' => $this->requireString($stage, 'investment'),
         ];
-    }
-
-    /**
-     * @param  array<array-key, mixed>  $data
-     */
-    private function requireString(array $data, string $key): string
-    {
-        $value = $data[$key] ?? null;
-
-        if (! is_string($value) || $value === '') {
-            throw AiGenerationException::invalidResponseShape();
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param  array<array-key, mixed>  $data
-     * @return array<int, string>
-     */
-    private function requireStringArray(array $data, string $key): array
-    {
-        $value = $data[$key] ?? null;
-
-        if (! is_array($value)) {
-            throw AiGenerationException::invalidResponseShape();
-        }
-
-        return array_values(array_map($this->requireStringValue(...), $value));
-    }
-
-    private function requireStringValue(mixed $value): string
-    {
-        if (! is_string($value) || $value === '') {
-            throw AiGenerationException::invalidResponseShape();
-        }
-
-        return $value;
     }
 }

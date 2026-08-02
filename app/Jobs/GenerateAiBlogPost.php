@@ -2,9 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Actions\Blog\GenerateUniquePostSlug;
+use App\Actions\Support\GenerateUniqueSlug;
 use App\Enums\PostStatus;
 use App\Exceptions\AiGenerationException;
+use App\Jobs\Concerns\HandlesAiGenerationFailure;
 use App\Models\City;
 use App\Models\Post;
 use App\Services\Ai\TextGenerator;
@@ -14,12 +15,11 @@ use App\Services\Blog\PostAiContentParser;
 use App\Services\Blog\PostCoverImageGenerator;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Support\Str;
 use Throwable;
 
 class GenerateAiBlogPost implements ShouldQueue
 {
-    use Queueable;
+    use HandlesAiGenerationFailure, Queueable;
 
     public int $tries = 3;
 
@@ -33,7 +33,7 @@ class GenerateAiBlogPost implements ShouldQueue
     public function handle(
         PostAiBriefPromptBuilder $promptBuilder,
         PostAiContentParser $parser,
-        GenerateUniquePostSlug $generateSlug,
+        GenerateUniqueSlug $generateSlug,
         PostCoverImageGenerator $coverImageGenerator,
         TextGenerator $textGenerator,
     ): void {
@@ -59,19 +59,15 @@ class GenerateAiBlogPost implements ShouldQueue
             return;
         }
 
-        $coverImage = null;
-
-        try {
-            $coverImage = $coverImageGenerator->generate($generated->imagePrompt, $brief->imageStyle);
-        } catch (Throwable $exception) {
-            report($exception);
-        }
+        $coverImage = $this->attemptOptionalStep(
+            fn () => $coverImageGenerator->generate($generated->imagePrompt, $brief->imageStyle),
+        );
 
         $title = $this->post->title ?: $generated->title;
 
         $this->post->update([
             'title' => $title,
-            'slug' => $generateSlug($title, ignoreId: $this->post->id),
+            'slug' => $generateSlug(Post::class, $title, ignoreId: $this->post->id),
             'excerpt' => $generated->excerpt,
             'content' => $generated->contentHtml,
             'cover_image' => $coverImage,
@@ -91,9 +87,6 @@ class GenerateAiBlogPost implements ShouldQueue
 
     private function markFailed(?Throwable $exception): void
     {
-        $this->post->update([
-            'status' => PostStatus::Failed,
-            'ai_error' => $exception ? Str::limit($exception->getMessage(), 2000) : null,
-        ]);
+        $this->markModelFailed($this->post, PostStatus::Failed, $exception);
     }
 }

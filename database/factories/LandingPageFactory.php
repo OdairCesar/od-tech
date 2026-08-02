@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Actions\Landing\GenerateLandingSlug;
+use App\Actions\Support\GenerateLocationSlug;
 use App\Enums\PageStatus;
 use App\Models\City;
 use App\Models\LandingPage;
@@ -40,8 +40,10 @@ class LandingPageFactory extends Factory
     public function configure(): static
     {
         return $this->afterMaking(function (LandingPage $landingPage): void {
-            $landingPage->slug = app(GenerateLandingSlug::class)(
-                $landingPage->service ?? Service::find($landingPage->service_id),
+            $service = $landingPage->service ?? Service::find($landingPage->service_id);
+
+            $landingPage->slug = app(GenerateLocationSlug::class)(
+                $service->slug,
                 $landingPage->city ?? City::find($landingPage->city_id),
             );
         });

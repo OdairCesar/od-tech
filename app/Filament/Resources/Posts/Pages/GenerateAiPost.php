@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Pages;
 
-use App\Actions\Blog\GenerateUniquePostSlug;
+use App\Actions\Support\GenerateUniqueSlug;
 use App\Enums\PostStatus;
 use App\Filament\Resources\Posts\PostResource;
 use App\Filament\Resources\Posts\Schemas\GenerateAiPostForm;
@@ -41,7 +41,7 @@ class GenerateAiPost extends Page
         return GenerateAiPostForm::configure($schema)->statePath('data');
     }
 
-    public function generate(GenerateUniquePostSlug $generateSlug): void
+    public function generate(GenerateUniqueSlug $generateSlug): void
     {
         $brief = PostAiBrief::fromArray($this->form->getState());
 
@@ -54,7 +54,7 @@ class GenerateAiPost extends Page
         $post = Post::query()->create([
             'user_id' => auth()->id(),
             'title' => $title,
-            'slug' => $generateSlug($title),
+            'slug' => $generateSlug(Post::class, $title),
             'status' => PostStatus::Generating,
             'ai_brief' => $brief->toArray(),
         ]);

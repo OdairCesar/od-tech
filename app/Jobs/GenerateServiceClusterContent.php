@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Enums\ServiceClusterStatus;
 use App\Exceptions\AiGenerationException;
+use App\Jobs\Concerns\HandlesAiGenerationFailure;
 use App\Models\ServiceCluster;
 use App\Services\Ai\TextGenerator;
 use App\Services\ServiceCluster\ServiceClusterAiBrief;
@@ -12,12 +13,11 @@ use App\Services\ServiceCluster\ServiceClusterAiContentParser;
 use App\Services\ServiceCluster\ServiceClusterCoverImageGenerator;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Support\Str;
 use Throwable;
 
 class GenerateServiceClusterContent implements ShouldQueue
 {
-    use Queueable;
+    use HandlesAiGenerationFailure, Queueable;
 
     public int $tries = 3;
 
@@ -56,13 +56,9 @@ class GenerateServiceClusterContent implements ShouldQueue
             return;
         }
 
-        $heroImage = null;
-
-        try {
-            $heroImage = $coverImageGenerator->generate($generated->imagePrompt);
-        } catch (Throwable $exception) {
-            report($exception);
-        }
+        $heroImage = $this->attemptOptionalStep(
+            fn () => $coverImageGenerator->generate($generated->imagePrompt),
+        );
 
         $this->cluster->update([
             'name' => $generated->title,
@@ -88,9 +84,6 @@ class GenerateServiceClusterContent implements ShouldQueue
 
     private function markFailed(?Throwable $exception): void
     {
-        $this->cluster->update([
-            'status' => ServiceClusterStatus::Failed,
-            'ai_error' => $exception ? Str::limit($exception->getMessage(), 2000) : null,
-        ]);
+        $this->markModelFailed($this->cluster, ServiceClusterStatus::Failed, $exception);
     }
 }

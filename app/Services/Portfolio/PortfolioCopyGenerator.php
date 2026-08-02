@@ -5,12 +5,15 @@ namespace App\Services\Portfolio;
 use App\Exceptions\AiGenerationException;
 use App\Services\Ai\JsonSchema;
 use App\Services\Ai\TextGenerator;
+use App\Services\Ai\ValidatesJsonPayload;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Throwable;
 
 final class PortfolioCopyGenerator
 {
+    use ValidatesJsonPayload;
+
     public function __construct(private readonly TextGenerator $textGenerator) {}
 
     /**
@@ -99,13 +102,9 @@ final class PortfolioCopyGenerator
             throw AiGenerationException::invalidResponseShape();
         }
 
-        $title = $data['title'] ?? null;
-        $excerpt = $data['excerpt'] ?? null;
-
-        if (! is_string($title) || $title === '' || ! is_string($excerpt) || $excerpt === '') {
-            throw AiGenerationException::invalidResponseShape();
-        }
-
-        return ['title' => $title, 'excerpt' => $excerpt];
+        return [
+            'title' => $this->requireString($data, 'title'),
+            'excerpt' => $this->requireString($data, 'excerpt'),
+        ];
     }
 }

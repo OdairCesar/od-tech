@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Actions\ServiceCluster\GenerateClusterLandingSlug;
+use App\Actions\ServiceCluster\RenameClusterLandingPages;
 use App\Actions\ServiceCluster\SyncClusterLandingPagesForCluster;
 use App\Models\ServiceCluster;
 use App\Services\Seo\SitemapBuilder;
@@ -12,7 +12,7 @@ class ServiceClusterObserver
 {
     public function __construct(
         private readonly SyncClusterLandingPagesForCluster $syncClusterLandingPagesForCluster,
-        private readonly GenerateClusterLandingSlug $generateClusterLandingSlug,
+        private readonly RenameClusterLandingPages $renameClusterLandingPages,
     ) {}
 
     public function created(ServiceCluster $serviceCluster): void
@@ -25,11 +25,7 @@ class ServiceClusterObserver
         Cache::forget(SitemapBuilder::cacheKey());
 
         if ($serviceCluster->wasChanged('slug')) {
-            $serviceCluster->loadMissing('landingPages.city');
-
-            foreach ($serviceCluster->landingPages as $landingPage) {
-                $landingPage->update(['slug' => ($this->generateClusterLandingSlug)($serviceCluster, $landingPage->city)]);
-            }
+            ($this->renameClusterLandingPages)($serviceCluster);
         }
     }
 }

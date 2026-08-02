@@ -2,6 +2,7 @@
 
 namespace App\Services\Landing;
 
+use App\Models\Service;
 use App\Models\ServiceCluster;
 use App\Models\ServiceClusterLandingPage;
 use App\Services\Seo\ContentComposer;
@@ -10,6 +11,8 @@ use App\Services\Seo\SeoMetaBuilder;
 use App\Services\Seo\StructuredDataService;
 use App\ViewModels\LandingPageViewModel;
 use App\ViewModels\ServiceViewModel;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 final readonly class ServiceClusterViewModelFactory
@@ -20,6 +23,27 @@ final readonly class ServiceClusterViewModelFactory
         private StructuredDataService $structuredData,
         private InternalLinkService $internalLinks,
     ) {}
+
+    public function makeForSlug(Service $service, string $slug): ServiceViewModel|LandingPageViewModel
+    {
+        $cluster = ServiceCluster::query()
+            ->published()
+            ->where('service_id', $service->id)
+            ->where('slug', $slug)
+            ->first();
+
+        if ($cluster !== null) {
+            return $this->makeForCluster($cluster);
+        }
+
+        $pivot = ServiceClusterLandingPage::query()
+            ->published()
+            ->where('slug', $slug)
+            ->whereHas('serviceCluster', fn (Builder $query): Builder => $query->where('service_id', $service->id))
+            ->firstOrFail();
+
+        return $this->makeForClusterCity($pivot);
+    }
 
     public function makeForCluster(ServiceCluster $cluster): ServiceViewModel
     {
@@ -62,6 +86,23 @@ final readonly class ServiceClusterViewModelFactory
     public function makeForClusterCity(ServiceClusterLandingPage $pivot): LandingPageViewModel
     {
         $pivot->loadMissing('serviceCluster.service', 'city');
+
+        $data = Cache::remember(
+            self::cacheKey($pivot->slug),
+            now()->addHour(),
+            fn (): array => $this->buildForClusterCity($pivot)->toArray(),
+        );
+
+        return LandingPageViewModel::fromArray($data);
+    }
+
+    public static function cacheKey(string $slug): string
+    {
+        return "service-cluster-landing-page-view-model:{$slug}";
+    }
+
+    private function buildForClusterCity(ServiceClusterLandingPage $pivot): LandingPageViewModel
+    {
         $cluster = $pivot->serviceCluster;
         $service = $cluster->service;
         $city = $pivot->city;

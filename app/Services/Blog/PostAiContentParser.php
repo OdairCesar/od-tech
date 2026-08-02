@@ -3,21 +3,18 @@
 namespace App\Services\Blog;
 
 use App\Exceptions\AiGenerationException;
+use App\Services\Ai\ValidatesJsonPayload;
 use Illuminate\Support\Str;
 
 final class PostAiContentParser
 {
+    use ValidatesJsonPayload;
+
     public function parse(string $jsonPayload): GeneratedPostContent
     {
         $data = json_decode($jsonPayload, associative: true);
 
         if (! is_array($data)) {
-            throw AiGenerationException::invalidResponseShape();
-        }
-
-        $tags = $data['tags'] ?? null;
-
-        if (! is_array($tags)) {
             throw AiGenerationException::invalidResponseShape();
         }
 
@@ -27,31 +24,8 @@ final class PostAiContentParser
             contentHtml: Str::sanitizeHtml($this->requireString($data, 'content_html')),
             metaTitle: $this->requireString($data, 'meta_title'),
             metaDescription: $this->requireString($data, 'meta_description'),
-            tags: array_values(array_map($this->requireStringValue(...), $tags)),
+            tags: $this->requireStringArray($data, 'tags'),
             imagePrompt: $this->requireString($data, 'image_prompt'),
         );
-    }
-
-    /**
-     * @param  array<array-key, mixed>  $data
-     */
-    private function requireString(array $data, string $key): string
-    {
-        $value = $data[$key] ?? null;
-
-        if (! is_string($value) || $value === '') {
-            throw AiGenerationException::invalidResponseShape();
-        }
-
-        return $value;
-    }
-
-    private function requireStringValue(mixed $value): string
-    {
-        if (! is_string($value) || $value === '') {
-            throw AiGenerationException::invalidResponseShape();
-        }
-
-        return $value;
     }
 }

@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Services\Landing;
+namespace App\Services\ServiceCluster;
 
 use App\Exceptions\AiGenerationException;
 use App\Models\Service;
 use App\Services\Ai\JsonSchema;
 use App\Services\Ai\TextGenerator;
-use App\Services\ServiceCluster\ServiceClusterCoverImageGenerator;
 
 final class ServiceClusterHeroImageGenerator
 {

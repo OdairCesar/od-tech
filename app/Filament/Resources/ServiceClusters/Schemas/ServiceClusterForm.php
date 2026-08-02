@@ -6,7 +6,7 @@ use App\Enums\ServiceClusterStatus;
 use App\Filament\Support\Forms\CloudinaryImageUpload;
 use App\Models\Service;
 use App\Models\ServiceCluster;
-use App\Services\Landing\ServiceClusterHeroImageGenerator;
+use App\Services\ServiceCluster\ServiceClusterHeroImageGenerator;
 use Filament\Actions\Action;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Repeater;

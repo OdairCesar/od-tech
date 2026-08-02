@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Actions\ServiceCluster\GenerateUniqueServiceClusterSlug;
+use App\Actions\Support\GenerateUniqueSlug;
 use App\Models\ServiceCluster;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 #[Description('Regenerate service cluster slugs that were built from a title still containing {cidade}/{uf}/{regiao} tokens')]
 class FixServiceClusterLocationSlugs extends Command
 {
-    public function handle(GenerateUniqueServiceClusterSlug $generateSlug): int
+    public function handle(GenerateUniqueSlug $generateSlug): int
     {
         $clusters = ServiceCluster::query()
             ->where(function ($query) {
@@ -44,7 +44,7 @@ class FixServiceClusterLocationSlugs extends Command
         }
 
         $newSlugsById = $candidates->mapWithKeys(fn (ServiceCluster $cluster): array => [
-            $cluster->id => $generateSlug($this->stripLocationTokens($cluster->title), ignoreId: $cluster->id),
+            $cluster->id => $generateSlug(ServiceCluster::class, $this->stripLocationTokens($cluster->title), ignoreId: $cluster->id),
         ]);
 
         $this->table(

@@ -57,3 +57,16 @@ test('re-running the cluster sync actions is idempotent and never duplicates a c
 
     expect(ServiceClusterLandingPage::where('service_cluster_id', $cluster->id)->where('city_id', $city->id)->count())->toBe(1);
 });
+
+test('renaming a cluster slug cascades to all of its cluster landing pages', function () {
+    $service = Service::factory()->create();
+    $cluster = ServiceCluster::factory()->create(['service_id' => $service->id, 'slug' => 'consultoria-antiga']);
+    $city = City::factory()->create(['slug' => 'bauru']);
+
+    $pivot = ServiceClusterLandingPage::where('service_cluster_id', $cluster->id)->where('city_id', $city->id)->sole();
+    expect($pivot->slug)->toBe('consultoria-antiga-em-bauru');
+
+    $cluster->update(['slug' => 'consultoria-nova']);
+
+    expect($pivot->fresh()->slug)->toBe('consultoria-nova-em-bauru');
+});

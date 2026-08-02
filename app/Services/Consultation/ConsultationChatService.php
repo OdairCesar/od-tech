@@ -6,9 +6,12 @@ use App\Enums\ConsultationStatus;
 use App\Exceptions\AiGenerationException;
 use App\Models\Consultation;
 use App\Services\Ai\TextGenerator;
+use App\Services\Ai\ValidatesJsonPayload;
 
 final class ConsultationChatService
 {
+    use ValidatesJsonPayload;
+
     public function __construct(
         private readonly ConsultationPromptBuilder $promptBuilder,
         private readonly TextGenerator $textGenerator,
@@ -64,14 +67,8 @@ final class ConsultationChatService
             throw AiGenerationException::invalidResponseShape();
         }
 
-        $reply = $data['reply'] ?? null;
-
-        if (! is_string($reply) || $reply === '') {
-            throw AiGenerationException::invalidResponseShape();
-        }
-
         return new ConsultationTurnResult(
-            reply: $reply,
+            reply: $this->requireString($data, 'reply'),
             readyForReport: (bool) ($data['ready_for_report'] ?? false),
         );
     }

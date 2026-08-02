@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\ServiceClusterLandingPages\Tables;
 
-use App\Enums\PageStatus;
+use App\Filament\Support\Actions\ViewOnLandingAction;
+use App\Filament\Support\Tables\LandingPageTableColumns;
 use App\Models\ServiceClusterLandingPage;
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -23,23 +23,7 @@ class ServiceClusterLandingPagesTable
                     ->label('Cluster')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('city.name')
-                    ->label('Cidade')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('slug')
-                    ->searchable(),
-                TextColumn::make('status')
-                    ->badge(),
-                TextColumn::make('meta_title')
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('custom_h1')
-                    ->label('H1 customizado')
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ...LandingPageTableColumns::common(),
             ])
             ->defaultSort('updated_at', 'desc')
             ->filters([
@@ -47,23 +31,17 @@ class ServiceClusterLandingPagesTable
                     ->label('Cluster')
                     ->relationship('serviceCluster', 'title')
                     ->searchable(),
-                SelectFilter::make('city_id')
-                    ->label('Cidade')
-                    ->relationship('city', 'name')
-                    ->searchable(),
-                SelectFilter::make('status')
-                    ->options(PageStatus::class),
+                ...LandingPageTableColumns::commonFilters(),
             ])
             ->recordActions([
-                Action::make('view')
-                    ->label('Ver no site')
-                    ->icon('heroicon-o-arrow-top-right-on-square')
-                    ->visible(fn (): bool => Route::has('services.clusters.show'))
-                    ->url(fn (ServiceClusterLandingPage $record) => route('services.clusters.show', [
+                ViewOnLandingAction::make(
+                    url: fn (ServiceClusterLandingPage $record) => route('services.clusters.show', [
                         $record->serviceCluster->service,
                         $record->slug,
-                    ]))
-                    ->openUrlInNewTab(),
+                    ]),
+                    visible: fn (): bool => Route::has('services.clusters.show'),
+                    label: 'Ver no site',
+                ),
                 EditAction::make(),
             ])
             ->toolbarActions([

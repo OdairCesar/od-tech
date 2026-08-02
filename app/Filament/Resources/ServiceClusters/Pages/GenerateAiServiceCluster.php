@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\ServiceClusters\Pages;
 
-use App\Actions\ServiceCluster\GenerateUniqueServiceClusterSlug;
+use App\Actions\Support\GenerateUniqueSlug;
 use App\Enums\ServiceClusterStatus;
 use App\Filament\Resources\ServiceClusters\Schemas\GenerateAiServiceClusterForm;
 use App\Filament\Resources\ServiceClusters\ServiceClusterResource;
@@ -40,13 +40,13 @@ class GenerateAiServiceCluster extends Page
         return GenerateAiServiceClusterForm::configure($schema)->statePath('data');
     }
 
-    public function generate(GenerateUniqueServiceClusterSlug $generateSlug): void
+    public function generate(GenerateUniqueSlug $generateSlug): void
     {
         $brief = ServiceClusterAiBrief::fromArray($this->form->getState());
 
         $cluster = ServiceCluster::query()->create([
             'service_id' => $brief->serviceId,
-            'slug' => $generateSlug($brief->topic),
+            'slug' => $generateSlug(ServiceCluster::class, $brief->topic),
             'name' => $brief->topic,
             'title' => $brief->topic,
             'status' => ServiceClusterStatus::Generating,

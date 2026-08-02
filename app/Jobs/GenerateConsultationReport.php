@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Enums\ConsultationStatus;
 use App\Exceptions\AiGenerationException;
+use App\Jobs\Concerns\HandlesAiGenerationFailure;
 use App\Mail\NewConsultationCompleted;
 use App\Models\Consultation;
 use App\Services\Ai\TextGenerator;
@@ -13,12 +14,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Throwable;
 
 class GenerateConsultationReport implements ShouldQueue
 {
-    use Queueable;
+    use HandlesAiGenerationFailure, Queueable;
 
     public int $tries = 3;
 
@@ -77,9 +77,6 @@ class GenerateConsultationReport implements ShouldQueue
 
     private function markFailed(?Throwable $exception): void
     {
-        $this->consultation->update([
-            'status' => ConsultationStatus::Failed,
-            'ai_error' => $exception ? Str::limit($exception->getMessage(), 2000) : null,
-        ]);
+        $this->markModelFailed($this->consultation, ConsultationStatus::Failed, $exception);
     }
 }

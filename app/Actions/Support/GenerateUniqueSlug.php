@@ -1,21 +1,24 @@
 <?php
 
-namespace App\Actions\ServiceCluster;
+namespace App\Actions\Support;
 
-use App\Models\ServiceCluster;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-final class GenerateUniqueServiceClusterSlug
+final class GenerateUniqueSlug
 {
-    public function __invoke(string $title, ?int $ignoreId = null): string
+    /**
+     * @param  class-string<Model>  $modelClass
+     */
+    public function __invoke(string $modelClass, string $title, ?int $ignoreId = null): string
     {
         $base = Str::slug($title);
         $slug = $base;
         $suffix = 2;
 
         while (
-            ServiceCluster::query()
+            $modelClass::query()
                 ->where('slug', $slug)
                 ->when($ignoreId, fn (Builder $query): Builder => $query->whereKeyNot($ignoreId))
                 ->exists()
