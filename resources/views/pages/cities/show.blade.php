@@ -22,7 +22,7 @@
                         <x-ui.icon-badge :icon="$landingPage['icon']" bg="bg-blue-600" />
                         <h3 class="text-lg font-bold">{{ $landingPage['label'] }}</h3>
                         <p class="text-[15px] leading-relaxed text-slate-500">{{ $landingPage['subtitle'] }}</p>
-                        <a href="{{ $landingPage['url'] }}" class="text-sm font-bold text-blue-600">Saiba mais &rarr;</a>
+                        <a href="{{ $landingPage['url'] }}" title="Saiba mais sobre {{ $landingPage['label'] }}" class="text-sm font-bold text-blue-600">Saiba mais &rarr;</a>
                     </x-ui.card>
                 @endforeach
             </div>

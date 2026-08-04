@@ -11,7 +11,7 @@
 
             <div class="flex flex-wrap gap-3">
                 @foreach ($links as $link)
-                    <a href="{{ $link['url'] }}" class="rounded-full border border-slate-800/10 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 hover:text-blue-600">
+                    <a href="{{ $link['url'] }}" title="{{ $link['label'] }}" class="rounded-full border border-slate-800/10 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 hover:text-blue-600">
                         {{ $link['label'] }}
                     </a>
                 @endforeach

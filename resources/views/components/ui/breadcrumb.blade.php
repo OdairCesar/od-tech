@@ -14,7 +14,7 @@
                     @endif
 
                     @if (! empty($item['url']) && ! $loop->last)
-                        <a href="{{ $item['url'] }}" class="hover:text-blue-600">{{ $item['label'] }}</a>
+                        <a href="{{ $item['url'] }}" title="{{ $item['label'] }}" class="hover:text-blue-600">{{ $item['label'] }}</a>
                     @else
                         <span aria-current="page" class="font-medium text-slate-800">{{ $item['label'] }}</span>
                     @endif

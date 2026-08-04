@@ -11,7 +11,7 @@
                         <x-ui.icon-badge :icon="$tool['icon']" bg="bg-blue-600" />
                         <h3 class="text-lg font-bold">{{ $tool['title'] }}</h3>
                         <p class="text-[15px] leading-relaxed text-slate-500">{{ $tool['tagline'] }}</p>
-                        <a href="{{ $tool['url'] }}" class="text-sm font-bold text-blue-600">Usar ferramenta &rarr;</a>
+                        <a href="{{ $tool['url'] }}" title="Usar ferramenta: {{ $tool['title'] }}" class="text-sm font-bold text-blue-600">Usar ferramenta &rarr;</a>
                     </x-ui.card>
                 @endforeach
             </div>

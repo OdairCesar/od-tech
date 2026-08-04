@@ -8,7 +8,7 @@
     <article class="px-5 py-16 sm:px-8 lg:px-14 lg:py-20">
         <div class="mx-auto max-w-3xl">
             @if ($vm->serviceName)
-                <a href="{{ $vm->serviceUrl }}" class="text-sm font-bold tracking-wide text-blue-600 uppercase">{{ $vm->serviceName }}</a>
+                <a href="{{ $vm->serviceUrl }}" title="{{ $vm->serviceName }}" class="text-sm font-bold tracking-wide text-blue-600 uppercase">{{ $vm->serviceName }}</a>
             @endif
 
             <h1 class="mt-3 mb-4 text-[32px] leading-[1.15] font-extrabold tracking-tight text-balance sm:text-[42px]">
@@ -28,7 +28,7 @@
             @endif
 
             @if ($vm->externalUrl)
-                <a href="{{ $vm->externalUrl }}" target="_blank" rel="noopener noreferrer"
+                <a href="{{ $vm->externalUrl }}" target="_blank" rel="noopener noreferrer" title="Ver projeto no ar"
                     class="mt-10 inline-flex items-center gap-2 text-sm font-bold text-blue-600">
                     Ver projeto no ar &rarr;
                 </a>

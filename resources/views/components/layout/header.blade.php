@@ -9,13 +9,13 @@
 
 <header class="sticky top-0 z-50 border-b border-slate-800/10 bg-white/85 backdrop-blur-md">
     <nav class="flex items-center justify-between px-8 py-5 min-[960px]:px-14" aria-label="Principal">
-        <a href="{{ route('home') }}" class="flex items-center">
+        <a href="{{ route('home') }}" title="Ir para a página inicial" class="flex items-center">
             <img src="{{ asset('imgs/logo.png') }}" alt="OD Tec" class="h-8 w-auto">
         </a>
 
         <div class="hidden items-center gap-9 min-[780px]:flex">
             @foreach ($navLinks as $link)
-                <a href="{{ $link['url'] }}" class="text-[15px] font-semibold text-slate-800 transition-transform duration-200 hover:-translate-y-0.5">{{ $link['label'] }}</a>
+                <a href="{{ $link['url'] }}" title="{{ $link['label'] }}" class="text-[15px] font-semibold text-slate-800 transition-transform duration-200 hover:-translate-y-0.5">{{ $link['label'] }}</a>
             @endforeach
 
             <x-ui.button :href="route('contact.show')" variant="primary" class="px-6 py-3 text-sm" gaEvent="cta_click" :gaPayload="['location' => 'header_desktop', 'label' => 'Fale com a gente']">Fale com a gente</x-ui.button>
@@ -41,7 +41,7 @@
         class="absolute inset-x-0 top-full hidden flex-col gap-1 border-b border-slate-800/10 bg-white px-6 pt-3 pb-6 shadow-[0_16px_32px_-12px_rgba(30,41,59,0.15)] min-[780px]:hidden"
     >
         @foreach ($navLinks as $link)
-            <a href="{{ $link['url'] }}" class="rounded-lg px-2 py-3 text-base font-semibold text-slate-800">{{ $link['label'] }}</a>
+            <a href="{{ $link['url'] }}" title="{{ $link['label'] }}" class="rounded-lg px-2 py-3 text-base font-semibold text-slate-800">{{ $link['label'] }}</a>
         @endforeach
 
         <x-ui.button :href="route('contact.show')" variant="primary" class="mt-2 w-full text-[15px]" gaEvent="cta_click" :gaPayload="['location' => 'header_mobile', 'label' => 'Fale com a gente']">Fale com a gente</x-ui.button>

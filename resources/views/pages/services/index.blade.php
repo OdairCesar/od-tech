@@ -15,7 +15,7 @@
                         <x-ui.icon-badge :icon="$service['icon']" bg="bg-blue-600" />
                         <h3 class="text-lg font-bold">{{ $service['title'] }}</h3>
                         <p class="text-[15px] leading-relaxed text-slate-500">{{ $service['subtitle'] }}</p>
-                        <a href="{{ $service['url'] }}" class="text-sm font-bold text-blue-600">Saiba mais &rarr;</a>
+                        <a href="{{ $service['url'] }}" title="Saiba mais sobre {{ $service['title'] }}" class="text-sm font-bold text-blue-600">Saiba mais &rarr;</a>
                     </x-ui.card>
                 @endforeach
             </div>

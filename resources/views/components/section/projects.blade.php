@@ -16,6 +16,7 @@
                 <{{ $tag }}
                     @if (! empty($item['url']))
                         href="{{ $item['url'] }}"
+                        title="{{ $item['title'] }}"
                         data-ga-event="project_click"
                         data-ga-payload="{{ json_encode(['title' => $item['title']]) }}"
                     @endif

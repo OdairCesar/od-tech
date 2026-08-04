@@ -11,19 +11,19 @@
         <div>
             <div class="mb-3.5 text-sm font-bold tracking-wide text-slate-500 uppercase">Navegação</div>
             <div class="flex flex-col gap-2.5">
-                <a href="{{ route('services.index') }}" class="text-[14.5px] text-slate-800 hover:text-blue-600">Serviços</a>
-                <a href="{{ route('home') }}#processo" class="text-[14.5px] text-slate-800 hover:text-blue-600">Processo</a>
-                <a href="{{ route('home') }}#trabalhos" class="text-[14.5px] text-slate-800 hover:text-blue-600">Trabalhos</a>
-                <a href="{{ route('cities.index') }}" class="text-[14.5px] text-slate-800 hover:text-blue-600">Cidades</a>
+                <a href="{{ route('services.index') }}" title="Serviços" class="text-[14.5px] text-slate-800 hover:text-blue-600">Serviços</a>
+                <a href="{{ route('home') }}#processo" title="Processo" class="text-[14.5px] text-slate-800 hover:text-blue-600">Processo</a>
+                <a href="{{ route('home') }}#trabalhos" title="Trabalhos" class="text-[14.5px] text-slate-800 hover:text-blue-600">Trabalhos</a>
+                <a href="{{ route('cities.index') }}" title="Cidades" class="text-[14.5px] text-slate-800 hover:text-blue-600">Cidades</a>
             </div>
         </div>
 
         <div>
             <div class="mb-3.5 text-sm font-bold tracking-wide text-slate-500 uppercase">Contato</div>
             <div class="flex flex-col gap-2.5">
-                <a href="{{ route('contact.show') }}" class="text-[14.5px] text-slate-800 hover:text-blue-600" data-ga-event="cta_click" data-ga-payload="{{ json_encode(['location' => 'footer', 'label' => 'Fale com a gente']) }}">Fale com a gente</a>
-                <a href="mailto:contato@odairferreira.com" class="text-[14.5px] text-slate-800 hover:text-blue-600" data-ga-event="email_click">contato@odairferreira.com</a>
-                <a href="https://wa.me/5514991434273" target="_blank" rel="noopener" class="text-[14.5px] text-slate-800 hover:text-blue-600" data-ga-event="whatsapp_click">WhatsApp: (14) 99143-4273</a>
+                <a href="{{ route('contact.show') }}" title="Fale com a gente" class="text-[14.5px] text-slate-800 hover:text-blue-600" data-ga-event="cta_click" data-ga-payload="{{ json_encode(['location' => 'footer', 'label' => 'Fale com a gente']) }}">Fale com a gente</a>
+                <a href="mailto:contato@odairferreira.com" title="Enviar e-mail para contato@odairferreira.com" class="text-[14.5px] text-slate-800 hover:text-blue-600" data-ga-event="email_click">contato@odairferreira.com</a>
+                <a href="https://wa.me/5514991434273" target="_blank" rel="noopener" title="Conversar no WhatsApp" class="text-[14.5px] text-slate-800 hover:text-blue-600" data-ga-event="whatsapp_click">WhatsApp: (14) 99143-4273</a>
                 <span class="text-[14.5px] text-slate-500">CNPJ: 53.487.318/0001-05</span>
             </div>
         </div>

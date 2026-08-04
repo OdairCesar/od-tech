@@ -20,12 +20,12 @@
 
             @if ($services->isNotEmpty())
                 <div class="mb-10 flex flex-wrap gap-2">
-                    <a href="{{ route('portfolio.index') }}"
+                    <a href="{{ route('portfolio.index') }}" title="Todos"
                         class="rounded-full border px-4 py-1.5 text-sm font-bold {{ $service ? 'border-slate-800/10 text-slate-500 hover:text-blue-600' : 'border-blue-600 bg-blue-600 text-white' }}">
                         Todos
                     </a>
                     @foreach ($services as $item)
-                        <a href="{{ route('portfolio.service', $item) }}"
+                        <a href="{{ route('portfolio.service', $item) }}" title="{{ $item->title }}"
                             class="rounded-full border px-4 py-1.5 text-sm font-bold {{ $service?->is($item) ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-800/10 text-slate-500 hover:text-blue-600' }}">
                             {{ $item->title }}
                         </a>

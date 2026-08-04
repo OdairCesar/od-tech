@@ -16,7 +16,7 @@
         <span class="text-sm font-bold tracking-wide text-blue-600 uppercase">{{ $categoryLabel }}</span>
     @endif
 
-    <a href="{{ $url }}" class="text-lg font-bold text-slate-800 after:absolute after:inset-0 hover:text-blue-600">{{ $title }}</a>
+    <a href="{{ $url }}" title="{{ $title }}" class="text-lg font-bold text-slate-800 after:absolute after:inset-0 hover:text-blue-600">{{ $title }}</a>
 
     @if ($excerpt)
         <p class="text-[15px] leading-relaxed text-slate-500">{{ $excerpt }}</p>
@@ -26,5 +26,5 @@
         <time datetime="{{ $publishedAt->toAtomString() }}" class="text-xs text-slate-400">{{ $publishedAt->translatedFormat('d \d\e F \d\e Y') }}</time>
     @endif
 
-    <a href="{{ $url }}" class="relative text-sm font-bold text-blue-600">Ler mais &rarr;</a>
+    <a href="{{ $url }}" title="Ler mais sobre {{ $title }}" class="relative text-sm font-bold text-blue-600">Ler mais &rarr;</a>
 </x-ui.card>

@@ -21,7 +21,7 @@
                     <x-ui.card>
                         <h3 class="text-lg font-bold">{{ $city['name'] }}/{{ $city['uf'] }}</h3>
                         <p class="text-[15px] leading-relaxed text-slate-500">{{ str($city['intro'])->limit(110) }}</p>
-                        <a href="{{ $city['url'] }}" class="text-sm font-bold text-blue-600">Ver serviços em {{ $city['name'] }} &rarr;</a>
+                        <a href="{{ $city['url'] }}" title="Ver serviços em {{ $city['name'] }}" class="text-sm font-bold text-blue-600">Ver serviços em {{ $city['name'] }} &rarr;</a>
                     </x-ui.card>
                 @endforeach
             </div>

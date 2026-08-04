@@ -14,7 +14,7 @@
                     <x-ui.card>
                         <h3 class="text-lg font-bold">{{ $state->name }}</h3>
                         <p class="text-[15px] leading-relaxed text-slate-500">{{ str($state->intro)->limit(110) }}</p>
-                        <a href="{{ route('states.show', $state) }}" class="text-sm font-bold text-blue-600">Ver cidades em {{ $state->name }} &rarr;</a>
+                        <a href="{{ route('states.show', $state) }}" title="Ver cidades em {{ $state->name }}" class="text-sm font-bold text-blue-600">Ver cidades em {{ $state->name }} &rarr;</a>
                     </x-ui.card>
                 @endforeach
             </div>

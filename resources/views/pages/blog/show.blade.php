@@ -8,7 +8,7 @@
     <article class="px-5 py-16 sm:px-8 lg:px-14 lg:py-20">
         <div class="mx-auto max-w-3xl">
             @if ($vm->categoryLabel)
-                <a href="{{ $vm->categoryUrl }}" class="text-sm font-bold tracking-wide text-blue-600 uppercase">{{ $vm->categoryLabel }}</a>
+                <a href="{{ $vm->categoryUrl }}" title="{{ $vm->categoryLabel }}" class="text-sm font-bold tracking-wide text-blue-600 uppercase">{{ $vm->categoryLabel }}</a>
             @endif
 
             <h1 class="mt-3 mb-4 text-[32px] leading-[1.15] font-extrabold tracking-tight text-balance sm:text-[42px]">

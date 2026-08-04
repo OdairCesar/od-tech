@@ -13,10 +13,13 @@
         'outline-light' => 'text-slate-800 border border-slate-800/20 transition-transform duration-200 hover:-translate-y-0.5',
         'outline-dark' => 'text-white border border-white/30 transition-transform duration-200 hover:-translate-y-0.5',
     ];
+
+    $linkTitle = trim(strip_tags($slot));
 @endphp
 
 <a
     href="{{ $href }}"
+    @if ($linkTitle !== '') title="{{ $linkTitle }}" @endif
     @if ($newTab) target="_blank" rel="noopener noreferrer" @endif
     @if ($gaEvent) data-ga-event="{{ $gaEvent }}" @endif
     @if ($gaPayload) data-ga-payload="{{ json_encode($gaPayload) }}" @endif

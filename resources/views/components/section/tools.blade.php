@@ -21,6 +21,7 @@
             @foreach ($items as $index => $item)
                 <a
                     href="{{ $item['url'] }}"
+                    title="{{ $item['title'] }}"
                     target="_blank"
                     rel="noopener"
                     data-reveal
@@ -44,7 +45,7 @@
         </div>
 
         <div class="mt-8 text-center">
-            <a href="{{ route('tools.index') }}" class="text-sm font-bold text-blue-600 hover:text-blue-700">Ver todas as ferramentas &rarr;</a>
+            <a href="{{ route('tools.index') }}" title="Ver todas as ferramentas" class="text-sm font-bold text-blue-600 hover:text-blue-700">Ver todas as ferramentas &rarr;</a>
         </div>
     </div>
 </section>

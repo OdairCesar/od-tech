@@ -25,7 +25,7 @@
             @foreach ($states as $state)
                 <div x-show="activeUf === @js($state->uf)" role="tabpanel" class="flex flex-wrap gap-3">
                     @foreach ($state->cities as $city)
-                        <a href="{{ route('cities.show', $city) }}" class="rounded-full border border-slate-800/10 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 hover:text-blue-600">
+                        <a href="{{ route('cities.show', $city) }}" title="{{ $city->name }}/{{ $state->uf }}" class="rounded-full border border-slate-800/10 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 hover:text-blue-600">
                             {{ $city->name }}/{{ $state->uf }}
                         </a>
                     @endforeach
