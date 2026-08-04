@@ -13,7 +13,7 @@
 
         <div class="grid gap-6 min-[640px]:grid-cols-2 min-[960px]:grid-cols-3">
             @foreach ($items as $index => $item)
-                <x-ui.card :delay="($index * 60).'ms'" :href="$item['url'] ?? null">
+                <x-ui.card :delay="($index * 60).'ms'" :href="$item['url'] ?? null" :title="$item['title']">
                     <x-ui.icon-badge :icon="$item['icon']" :bg="$item['bg'] ?? 'bg-slate-800'" />
 
                     <h3 class="text-lg font-bold group-hover:text-blue-600">{{ $item['title'] }}</h3>
